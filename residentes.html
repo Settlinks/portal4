@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal 4 — Portal Residente</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="./assets/css/styles.css">
+  <style>
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+    .cal-cell{aspect-ratio:1;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;cursor:pointer;transition:var(--transition);border:1px solid var(--ink-border);color:var(--slate);}
+    .cal-cell.libre{border-color:rgba(63,185,80,.3);color:var(--success);background:rgba(63,185,80,.05);}
+    .cal-cell.ocupado{border-color:rgba(248,81,73,.3);color:var(--danger);background:rgba(248,81,73,.05);pointer-events:none;opacity:.6;}
+    .cal-cell.mia{border-color:rgba(201,120,58,.4);color:var(--copper-light);background:var(--copper-mist);}
+    .cal-cell:hover.libre{background:rgba(63,185,80,.12);transform:scale(1.06);}
+    .toggle-switch{position:relative;width:46px;height:24px;}
+    .toggle-switch input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:var(--ink-border);border-radius:99px;cursor:pointer;transition:.3s;}
+    .toggle-slider:before{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;bottom:3px;left:3px;transition:.3s;}
+    input:checked+.toggle-slider{background:var(--copper);}
+    input:checked+.toggle-slider:before{transform:translateX(22px);}
+    .media-card{background:var(--ink-soft);border:1px solid var(--ink-border);border-radius:var(--r-lg);overflow:hidden;transition:var(--transition);}
+    .media-card:hover{border-color:var(--copper);}
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-mark">4</div>
+      <h2>Portal Residente</h2>
+      <p>Gestión de tu unidad · Portal 4</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="field-label">ID de Comunidad</label><input type="text" id="rCom" class="input-field" placeholder="COM-1001" autocomplete="off" onkeydown="if(event.key==='Enter')loginRes()"></div>
+      <div><label class="field-label">Correo electrónico</label><input type="email" id="rUsr" class="input-field" placeholder="tu@correo.mx" autocomplete="username" onkeydown="if(event.key==='Enter')loginRes()"></div>
+      <div><label class="field-label">PIN de acceso</label><input type="password" id="rPin" class="input-field" placeholder="••••••" maxlength="6" autocomplete="current-password" onkeydown="if(event.key==='Enter')loginRes()"></div>
+      <div id="rOtpWrap" style="display:none"><label class="field-label">Código 2FA</label><input type="text" id="rOtp" class="input-field" placeholder="000000" style="font-family:'DM Mono',monospace;letter-spacing:.25em;font-size:1.1rem;text-align:center" maxlength="6" inputmode="numeric"></div>
+      <div id="rLoginErr" style="display:none;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:var(--r-md);padding:10px 14px;font-size:.8rem;color:var(--danger)"></div>
+      <button id="rBtn" onclick="loginRes()" class="btn btn-primary btn-lg" style="width:100%;margin-top:4px"><i class="fas fa-right-to-bracket"></i> Entrar</button>
+    </div>
+    <div class="login-divider" style="margin-top:1.25rem">Otros accesos</div>
+    <div style="display:flex;gap:8px">
+      <a href="./index.html" class="btn btn-outline btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-lock"></i> Administrador</a>
+      <a href="./guardia.html" class="btn btn-outline btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-shield-halved"></i> Guardia</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP SHELL ══ -->
+<div id="appShell" style="display:none">
+  <nav class="navbar">
+    <div style="display:flex;align-items:center;gap:16px">
+      <a href="#" class="navbar-brand" onclick="return false">
+        <div class="navbar-logo">4</div>
+        <div><div class="navbar-brand-name">Portal 4</div><div class="navbar-brand-sub" id="navCom">—</div></div>
+      </a>
+    </div>
+    <div class="navbar-nav">
+      <a href="#" class="nav-link active" onclick="sw('cuenta',this)"><i class="fas fa-wallet"></i> <span>Mi cuenta</span></a>
+      <a href="#" class="nav-link" onclick="sw('amenidades',this)"><i class="fas fa-dumbbell"></i> <span>Amenidades</span></a>
+      <a href="#" class="nav-link" onclick="sw('visitantes',this)"><i class="fas fa-qrcode"></i> <span>Visitantes</span></a>
+      <a href="#" class="nav-link" onclick="sw('incidencias',this)"><i class="fas fa-triangle-exclamation"></i> <span>Incidencias</span></a>
+      <a href="#" class="nav-link" id="rentalLink" style="display:none" onclick="sw('rental',this)"><i class="fas fa-video"></i> <span>Arrendamiento</span></a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="nav-user"><div class="nav-avatar" id="navAv">?</div><div><div class="nav-user-name" id="navNom">—</div><div class="nav-user-role" id="navRol">—</div></div></div>
+      <button class="btn-logout" onclick="logout()"><i class="fas fa-arrow-right-from-bracket"></i></button>
+      <button class="hamburger" id="hbBtn" onclick="toggleMobNav()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-nav" id="mobNav">
+    <a href="#" class="nav-link" onclick="sw('cuenta',this);closeMobNav()"><i class="fas fa-wallet"></i> Mi cuenta</a>
+    <a href="#" class="nav-link" onclick="sw('amenidades',this);closeMobNav()"><i class="fas fa-dumbbell"></i> Amenidades</a>
+    <a href="#" class="nav-link" onclick="sw('visitantes',this);closeMobNav()"><i class="fas fa-qrcode"></i> Visitantes</a>
+    <a href="#" class="nav-link" onclick="sw('incidencias',this);closeMobNav()"><i class="fas fa-triangle-exclamation"></i> Incidencias</a>
+    <a href="#" class="nav-link" id="rentalLinkMob" style="display:none" onclick="sw('rental',this);closeMobNav()"><i class="fas fa-video"></i> Arrendamiento</a>
+    <div class="divider"></div>
+    <button class="btn btn-danger-ghost btn-sm" onclick="logout()" style="width:100%"><i class="fas fa-arrow-right-from-bracket"></i> Salir</button>
+  </div>
+
+  <main style="padding:20px 24px;position:relative;z-index:1">
+
+    <!-- ═══ MI CUENTA ═══ -->
+    <section id="sec-cuenta" class="page-enter">
+      <div style="margin-bottom:24px"><div class="section-eyebrow">Estado de cuenta</div><h1 class="section-title">Mi Unidad</h1></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-bottom:24px">
+        <div class="card card-copper" style="padding:1.75rem">
+          <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--copper-light);margin-bottom:8px">Estado de cuenta</div>
+          <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700" id="cuentaBalance">—</div>
+          <div style="font-size:.72rem;color:var(--slate);margin-top:6px" id="cuentaEstado">Cargando…</div>
+          <div class="divider" style="margin:16px 0"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary btn-sm" onclick="showToast('SPEI próximamente — requiere integración bancaria','info',5000)"><i class="fas fa-qrcode"></i> QR de pago</button>
+            <button class="btn btn-ghost btn-sm" onclick="cargarCuenta()"><i class="fas fa-rotate-right"></i> Actualizar</button>
+          </div>
+        </div>
+        <div class="card" style="padding:1.75rem">
+          <div class="section-eyebrow" style="margin-bottom:12px">Información de unidad</div>
+          <div id="unitInfo"><div class="skeleton" style="height:14px;margin-bottom:10px"></div><div class="skeleton" style="height:14px;width:70%;margin-bottom:10px"></div></div>
+        </div>
+        <div class="card" id="inqCard" style="display:none;padding:1.75rem">
+          <div class="section-eyebrow" style="margin-bottom:12px">Control de inquilino</div>
+          <p style="font-size:.8rem;color:var(--slate);margin-bottom:16px">Activa o desactiva el acceso de tu inquilino.</p>
+          <div id="inqList"><p style="font-size:.8rem;color:var(--slate-light);font-style:italic">Sin inquilinos en tu unidad.</p></div>
+        </div>
+      </div>
+      <div class="card" style="padding:1.5rem">
+        <div class="section-eyebrow" style="margin-bottom:4px">Historial</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--white);margin-bottom:16px">Registro de Pagos</h3>
+        <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Concepto</th><th>Período</th><th>Monto</th><th>Método</th><th>Fecha</th><th>Estado</th></tr></thead><tbody id="tbPagos"><tr><td colspan="7" style="text-align:center;padding:24px;color:var(--slate)">Cargando…</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ═══ AMENIDADES ═══ -->
+    <section id="sec-amenidades" style="display:none" class="page-enter">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px">
+        <div><div class="section-eyebrow">Reservaciones</div><h1 class="section-title">Amenidades</h1></div>
+      </div>
+      <div id="morosaWarn" style="display:none;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:var(--r-lg);padding:1rem;margin-bottom:16px;color:var(--danger)">
+        <i class="fas fa-circle-exclamation"></i> <strong>Cuenta con adeudo:</strong> No puedes reservar hasta liquidar tu saldo pendiente.
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px" id="amenBtns">
+        <button class="btn btn-ghost" onclick="selAmen('Salón de eventos',this)"><i class="fas fa-champagne-glasses"></i> Salón</button>
+        <button class="btn btn-outline" onclick="selAmen('Rooftop',this)"><i class="fas fa-sun"></i> Rooftop</button>
+        <button class="btn btn-outline" onclick="selAmen('Gimnasio',this)"><i class="fas fa-dumbbell"></i> Gimnasio</button>
+        <button class="btn btn-outline" onclick="selAmen('Alberca',this)"><i class="fas fa-person-swimming"></i> Alberca</button>
+        <button class="btn btn-outline" onclick="selAmen('BBQ',this)"><i class="fas fa-fire-burner"></i> BBQ</button>
+      </div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start" id="amenGrid">
+        <div class="card" style="padding:1.5rem;min-width:290px;max-width:340px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <button class="btn btn-outline btn-sm" onclick="cambiarMes(-1)"><i class="fas fa-chevron-left"></i></button>
+            <h3 style="font-family:'Playfair Display',serif;font-size:.9rem" id="calTitle">—</h3>
+            <button class="btn btn-outline btn-sm" onclick="cambiarMes(1)"><i class="fas fa-chevron-right"></i></button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">
+            <div style="text-align:center;font-size:.6rem;color:var(--slate-light)">L</div><div style="text-align:center;font-size:.6rem;color:var(--slate-light)">M</div>
+            <div style="text-align:center;font-size:.6rem;color:var(--slate-light)">X</div><div style="text-align:center;font-size:.6rem;color:var(--slate-light)">J</div>
+            <div style="text-align:center;font-size:.6rem;color:var(--slate-light)">V</div><div style="text-align:center;font-size:.6rem;color:var(--slate-light)">S</div>
+            <div style="text-align:center;font-size:.6rem;color:var(--slate-light)">D</div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div style="display:flex;gap:10px;margin-top:12px;font-size:.65rem;flex-wrap:wrap">
+            <span style="color:var(--success)">● Libre</span><span style="color:var(--danger)">● Ocupado</span><span style="color:var(--copper-light)">● Tuya</span>
+          </div>
+        </div>
+        <div class="card" style="padding:1.5rem">
+          <div class="section-eyebrow" style="margin-bottom:8px">Nueva reserva</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div><label class="field-label">Amenidad</label><input class="input-field" id="resAmen" readonly></div>
+            <div><label class="field-label">Fecha</label><input class="input-field" id="resFecha" type="date"></div>
+            <div><label class="field-label">Hora</label><select class="input-field" id="resHora"><option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option></select></div>
+            <div><label class="field-label">Duración</label><select class="input-field" id="resDur"><option value="1hr">1 hora</option><option value="2hr">2 horas</option><option value="3hr">3 horas</option><option value="Todo el día">Todo el día</option></select></div>
+            <button class="btn btn-primary" id="btnReservar" onclick="reservar()"><i class="fas fa-calendar-check"></i> Confirmar reserva</button>
+          </div>
+          <div class="divider"></div>
+          <div class="section-eyebrow" style="margin-bottom:10px">Mis reservaciones</div>
+          <div id="misReservas"><p style="font-size:.78rem;color:var(--slate)">Cargando…</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VISITANTES ═══ -->
+    <section id="sec-visitantes" style="display:none" class="page-enter">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px">
+        <div><div class="section-eyebrow">Control de acceso</div><h1 class="section-title">Mis Visitantes</h1></div>
+        <button class="btn btn-primary btn-sm" onclick="abrirModal('modalVis')"><i class="fas fa-plus"></i> Invitar visitante</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px" id="gridVis">
+        <div class="skeleton" style="height:200px;border-radius:var(--r-xl)"></div>
+        <div class="skeleton" style="height:200px;border-radius:var(--r-xl)"></div>
+      </div>
+    </section>
+
+    <!-- ═══ INCIDENCIAS ═══ -->
+    <section id="sec-incidencias" style="display:none" class="page-enter">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px">
+        <div><div class="section-eyebrow">Soporte</div><h1 class="section-title">Mis Incidencias</h1></div>
+        <button class="btn btn-primary btn-sm" onclick="abrirModal('modalInc')"><i class="fas fa-plus"></i> Reportar incidencia</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px" id="gridInc">
+        <div class="skeleton" style="height:180px;border-radius:var(--r-xl)"></div>
+      </div>
+    </section>
+
+    <!-- ═══ RENTAL ═══ -->
+    <section id="sec-rental" style="display:none" class="page-enter">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px">
+        <div><div class="section-eyebrow">Portal Arrendamiento</div><h1 class="section-title">Medios de tu Unidad</h1></div>
+        <button class="btn btn-primary btn-sm" onclick="abrirModal('modalMedia')"><i class="fas fa-plus"></i> Subir media</button>
+      </div>
+      <p style="font-size:.83rem;color:var(--slate);margin-bottom:20px">Sube fotos, videos e instructivos que tus inquilinos verán en el portal. Tu contacto permanece oculto por defecto.</p>
+      <div class="card" style="padding:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+        <div><div style="font-weight:700;font-size:.88rem;margin-bottom:3px">Ocultar datos de contacto al inquilino</div><div style="font-size:.75rem;color:var(--slate)">Tu email y teléfono no serán visibles.</div></div>
+        <label class="toggle-switch"><input type="checkbox" id="privToggle" checked><span class="toggle-slider"></span></label>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px" id="gridMedia">
+        <div class="skeleton" style="height:200px;border-radius:var(--r-xl)"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ══ MODALS ══ -->
+<div id="modalVis" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header"><h3 class="modal-title">Invitar Visitante</h3><button class="btn-logout" onclick="cerrarModal('modalVis')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="field-label">Nombre del visitante</label><input class="input-field" id="visNom" placeholder="Nombre completo"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="field-label">Fecha de visita</label><input class="input-field" id="visFecha" type="date"></div>
+        <div><label class="field-label">Hora aproximada</label><input class="input-field" id="visHora" type="time"></div>
+      </div>
+      <div><label class="field-label">Placa (opcional)</label><input class="input-field" id="visPlaca" placeholder="ABC-1234"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalVis')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="generarPase()"><i class="fas fa-qrcode"></i> Generar pase QR</button></div>
+  </div>
+</div>
+
+<div id="modalQRGen" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header"><h3 class="modal-title">Pase de Acceso Generado</h3><button class="btn-logout" onclick="cerrarModal('modalQRGen')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" style="text-align:center">
+      <div id="qrGenImg" style="margin:0 auto 16px"></div>
+      <div style="font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:700;letter-spacing:.15em;color:var(--copper-light);margin-bottom:8px" id="qrGenCod"></div>
+      <p style="font-size:.8rem;color:var(--slate);margin-bottom:16px">Muestra este QR o el código al guardia de seguridad.</p>
+      <button class="btn btn-ghost btn-sm" onclick="copyToClipboard(document.getElementById('qrGenCod').textContent,this)"><i class="fas fa-copy"></i> Copiar código</button>
+    </div>
+    <div class="modal-footer"><button class="btn btn-primary btn-sm" onclick="cerrarModal('modalQRGen')">Cerrar</button></div>
+  </div>
+</div>
+
+<div id="modalInc" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header"><h3 class="modal-title">Reportar Incidencia</h3><button class="btn-logout" onclick="cerrarModal('modalInc')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="field-label">Categoría</label><select class="input-field" id="incCat"><option>Mantenimiento</option><option>Seguridad</option><option>Ruido</option><option>Limpieza</option><option>General</option></select></div>
+        <div><label class="field-label">Título</label><input class="input-field" id="incTit" placeholder="Breve descripción"></div>
+      </div>
+      <div><label class="field-label">Descripción detallada</label><textarea class="input-field" id="incDesc" rows="4" placeholder="Explica la situación…"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalInc')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="crearIncidencia()"><i class="fas fa-paper-plane"></i> Enviar reporte</button></div>
+  </div>
+</div>
+
+<div id="modalMedia" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header"><h3 class="modal-title">Subir Contenido</h3><button class="btn-logout" onclick="cerrarModal('modalMedia')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="field-label">Título</label><input class="input-field" id="medTit" placeholder="Ej. Instrucciones calentador"></div>
+      <div><label class="field-label">Tipo</label><select class="input-field" id="medTipo"><option value="imagen">Imagen</option><option value="video">Video</option><option value="documento">Documento / PDF</option></select></div>
+      <div>
+        <label class="field-label">Archivo</label>
+        <div class="file-drop" onclick="document.getElementById('medFile').click()">
+          <i class="fas fa-cloud-upload-alt" style="font-size:2rem;color:var(--copper-light);display:block;margin-bottom:8px"></i>
+          <p style="font-size:.82rem;color:var(--slate)">Haz clic para seleccionar</p>
+          <p style="font-size:.7rem;color:var(--slate-light)">Imágenes, videos, PDFs · Máx 10 MB</p>
+          <input type="file" id="medFile" accept="image/*,video/*,.pdf" onchange="medFileSelected(this)">
+        </div>
+        <p id="medFileName" style="font-size:.72rem;color:var(--copper-light);margin-top:6px;display:none"></p>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalMedia')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="subirMedia()"><i class="fas fa-upload"></i> Subir</button></div>
+  </div>
+</div>
+
+<script src="./assets/js/api.js"></script>
+<script>
+/* ══════════════════════════════════════════════════════════
+   PORTAL 4 — residentes.html  v2.1
+══════════════════════════════════════════════════════════ */
+let comunidadId = '', miUnidad = '', miRol = '';
+let amenSel = 'Salón de eventos', calMes = new Date();
+let reservasCache = [], isMoroso = false, mediaFile = null;
+
+window.addEventListener('DOMContentLoaded', () => {
+  const s = Session.get();
+  if (s && ['propietario','inquilino','presidente','admin'].includes(s.role)) {
+    comunidadId = s.comunidadId; miUnidad = s.unidad; miRol = s.role;
+    mostrarApp(s);
+  }
+  document.getElementById('resFecha').value = new Date().toISOString().slice(0,10);
+  document.getElementById('resAmen').value  = amenSel;
+  document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.add('hidden'); }));
+  renderCalendario();
+});
+
+async function loginRes() {
+  const btn    = document.getElementById('rBtn');
+  const errEl  = document.getElementById('rLoginErr');
+  const comId  = document.getElementById('rCom').value.trim();
+  const usuario = document.getElementById('rUsr').value.trim();
+  const pin    = document.getElementById('rPin').value.trim();
+  const otp    = document.getElementById('rOtp')?.value.replace(/\s/g,'').trim() || '';
+  errEl.style.display = 'none';
+  if (!comId||!usuario||!pin) { errEl.textContent='Completa todos los campos.'; errEl.style.display='block'; return; }
+  btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verificando…';
+  try {
+    const res = await apiPost('LOGIN', { comunidadId: comId }, { usuario, pin, otpCode:otp, comunidadId:comId });
+    const allowed = ['propietario','inquilino','presidente','admin'];
+    if (!allowed.includes(res.role)) { errEl.textContent='Acceso no permitido para este rol.'; errEl.style.display='block'; return; }
+    Session.set({ usuario, token:res.token, role:res.role, nombre:res.nombre, comunidadId:comId, unidad:res.unidad||'' });
+    comunidadId=comId; miUnidad=res.unidad||''; miRol=res.role;
+    mostrarApp(res);
+  } catch(err) { errEl.textContent=err.message; errEl.style.display='block'; }
+  finally { btn.disabled=false; btn.innerHTML='<i class="fas fa-right-to-bracket"></i> Entrar'; }
+}
+
+function mostrarApp(s) {
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').style.display='block';
+  const n=s.nombre||'—';
+  document.getElementById('navNom').textContent=n;
+  document.getElementById('navRol').textContent=(s.role||'').toUpperCase();
+  document.getElementById('navAv').textContent=n.charAt(0).toUpperCase();
+  document.getElementById('navCom').textContent=comunidadId;
+  if (miRol==='propietario') {
+    document.getElementById('rentalLink').style.display='flex';
+    document.getElementById('inqCard').style.display='block';
+  }
+  cargarCuenta();
+  cargarMisReservas();
+  cargarMisVisitantes();
+  cargarMisIncidencias();
+  if (miRol==='propietario') cargarMedia();
+}
+
+function logout() { Session.clear(); location.reload(); }
+function sw(sec,el) {
+  document.querySelectorAll('section[id^="sec-"]').forEach(s=>s.style.display='none');
+  document.getElementById('sec-'+sec).style.display='block';
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+function toggleMobNav(){ document.getElementById('mobNav').classList.toggle('open'); document.getElementById('hbBtn').classList.toggle('open'); }
+function closeMobNav() { document.getElementById('mobNav').classList.remove('open'); document.getElementById('hbBtn').classList.remove('open'); }
+function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
+function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+/* ── Mi Cuenta ── */
+async function cargarCuenta() {
+  try {
+    const res = await apiPost('CONSULTAR_ESTADO_CUENTA', { comunidadId, unidad:miUnidad });
+    const prop  = res.propiedad || [];
+    const pagos = res.pagos    || [];
+    isMoroso = prop[8] === 'Moroso';
+    const balEl = document.getElementById('cuentaBalance');
+    balEl.style.color   = isMoroso ? 'var(--danger)' : 'var(--success)';
+    balEl.textContent   = isMoroso ? 'CON ADEUDO' : 'AL CORRIENTE';
+    document.getElementById('cuentaEstado').textContent = `Unidad ${miUnidad} · ${prop[8]||'—'}`;
+    document.getElementById('morosaWarn').style.display = isMoroso ? 'block' : 'none';
+    const btn = document.getElementById('btnReservar');
+    if (isMoroso) { btn.disabled=true; btn.title='Saldo pendiente'; }
+    document.getElementById('unitInfo').innerHTML = [
+      ['Torre','1',prop[1]||'—'],['Unidad','2',prop[2]||miUnidad],['Propietario','4',prop[4]||'—'],
+      ['Superficie','5',(prop[5]?prop[5]+' m²':'—')],['Estacionamiento','6',prop[6]||'—'],['Bodega','7',prop[7]||'—'],
+    ].map(([k,,v])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--ink-border-soft)"><span style="font-size:.7rem;color:var(--slate);text-transform:uppercase;letter-spacing:.07em">${k}</span><span style="font-size:.82rem;font-weight:600">${v}</span></div>`).join('');
+    document.getElementById('tbPagos').innerHTML = pagos.length
+      ? pagos.map(r=>`<tr><td class="mono">${esc(r[0])}</td><td>${esc(r[3])}</td><td>${esc(r[7])||'—'}</td><td style="color:var(--success);font-weight:700">${fmtMXN(r[4])}</td><td>${esc(r[5])}</td><td style="color:var(--slate)">${fmtDate(r[8])}</td><td><span class="badge badge-active">${esc(r[10])}</span></td></tr>`).join('')
+      : '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--slate)">Sin pagos registrados.</td></tr>';
+  } catch(err) { showToast('Error cuenta: '+err.message,'error'); }
+}
+
+/* ── Amenidades ── */
+function selAmen(nombre,btn) {
+  amenSel=nombre; document.getElementById('resAmen').value=nombre;
+  document.querySelectorAll('#amenBtns .btn').forEach(b=>b.className=b.className.replace('btn-ghost','btn-outline'));
+  btn.className=btn.className.replace('btn-outline','btn-ghost');
+  renderCalendario();
+}
+function cambiarMes(d) { calMes.setMonth(calMes.getMonth()+d); renderCalendario(); }
+function renderCalendario() {
+  const y=calMes.getFullYear(), m=calMes.getMonth();
+  document.getElementById('calTitle').textContent=new Date(y,m,1).toLocaleDateString('es-MX',{month:'long',year:'numeric'});
+  const dias=new Date(y,m+1,0).getDate(), start=(new Date(y,m,1).getDay()+6)%7;
+  let html='<div></div>'.repeat(start);
+  for(let d=1;d<=dias;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const mine =reservasCache.some(r=>r.amenidad===amenSel&&r.fecha===ds&&r.unidad===miUnidad&&r.estado!=='Cancelado');
+    const taken=reservasCache.some(r=>r.amenidad===amenSel&&r.fecha===ds&&r.estado!=='Cancelado');
+    html+=`<div class="cal-cell ${mine?'mia':taken?'ocupado':'libre'}" onclick="selFecha('${ds}')" title="${ds}">${d}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML=html;
+}
+function selFecha(d) { document.getElementById('resFecha').value=d; }
+
+async function cargarMisReservas() {
+  try {
+    const res = await apiPost('LEER_AMENIDADES', { comunidadId });
+    const all  = Array.isArray(res) ? res.slice(1) : [];
+    reservasCache = all.map(r=>({id:r[0],unidad:r[1],amenidad:r[2],fecha:r[3],hora:r[4],dur:r[5],residente:r[6],estado:r[8]}));
+    const mias = reservasCache.filter(r=>r.unidad===miUnidad&&r.estado!=='Cancelado');
+    renderCalendario();
+    document.getElementById('misReservas').innerHTML = mias.length
+      ? mias.map(r=>`<div style="background:var(--ink-soft);border:1px solid var(--ink-border);border-radius:var(--r-md);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
+          <div><div style="font-size:.78rem;font-weight:700">${esc(r.amenidad)}</div><div style="font-size:.68rem;color:var(--slate)">${esc(r.fecha)} · ${esc(r.hora)}</div></div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="badge badge-active">${esc(r.estado)}</span>
+            <button class="btn btn-xs btn-danger-ghost" onclick="cancelarRes('${esc(r.id)}')">✕</button>
+          </div>
+        </div>`).join('')
+      : '<p style="font-size:.77rem;color:var(--slate);font-style:italic">Sin reservaciones activas.</p>';
+  } catch {}
+}
+
+async function reservar() {
+  if(isMoroso) { showToast('No puedes reservar con saldo pendiente','error'); return; }
+  try {
+    const res = await apiPost('RESERVAR_AMENIDAD', {
+      comunidadId, amenidad:document.getElementById('resAmen').value,
+      fecha:document.getElementById('resFecha').value,
+      hora: document.getElementById('resHora').value,
+      duracion:document.getElementById('resDur').value
+    });
+    showToast('Reserva confirmada: '+res.id,'success');
+    cargarMisReservas();
+  } catch(err) { showToast('Error: '+err.message,'error'); }
+}
+
+async function cancelarRes(id) {
+  if(!confirm('¿Cancelar esta reserva?')) return;
+  try { await apiPost('CANCELAR_RESERVA',{comunidadId,id}); showToast('Cancelada','warning'); cargarMisReservas(); }
+  catch(err) { showToast('Error: '+err.message,'error'); }
+}
+
+/* ── Visitantes ── */
+async function cargarMisVisitantes() {
+  try {
+    const res = await apiPost('LEER_VISITANTES', { comunidadId });
+    const all = Array.isArray(res) ? res.slice(1) : [];
+    const mios = all.filter(r=>r[2]===miUnidad);
+    document.getElementById('gridVis').innerHTML = mios.length
+      ? mios.map(r=>`<div class="card card-hover" style="padding:1.25rem">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <span class="mono" style="font-size:.7rem;color:var(--copper-light)">${esc(r[0])}</span>
+            <span class="badge badge-${r[9]==='Vigente'?'active':r[9]==='Usado'?'guard':'moroso'}">${esc(r[9])}</span>
+          </div>
+          <div style="font-weight:700;font-size:.92rem;margin-bottom:6px">${esc(r[4])}</div>
+          <div style="font-size:.75rem;color:var(--slate);margin-bottom:12px"><i class="fas fa-calendar"></i> ${esc(r[5])} ${r[6]?'· '+r[6]:''} ${r[7]?'<br><i class="fas fa-car"></i> '+esc(r[7]):''}</div>
+          <img src="${qrUrl(r[1],80)}" width="80" height="80" style="border-radius:var(--r-sm);display:block;margin-bottom:10px" onerror="this.style.display='none'">
+          <div style="font-family:'DM Mono',monospace;font-size:.8rem;letter-spacing:.12em;color:var(--copper-light);font-weight:700">${esc(r[1])}</div>
+        </div>`).join('')
+      : '<p style="color:var(--slate);grid-column:1/-1;padding:24px">Sin visitantes registrados.</p>';
+  } catch(err) { showToast('Error visitantes: '+err.message,'error'); }
+}
+
+async function generarPase() {
+  try {
+    const res = await apiPost('GENERAR_PASE_VISITANTE', {
+      comunidadId,
+      nombreVisitante: document.getElementById('visNom').value.trim(),
+      fechaVisita: document.getElementById('visFecha').value,
+      horaVisita:  document.getElementById('visHora').value,
+      placa:       document.getElementById('visPlaca').value.trim()
+    });
+    cerrarModal('modalVis');
+    document.getElementById('qrGenCod').textContent=res.codigo;
+    document.getElementById('qrGenImg').innerHTML=`<img src="${qrUrl(res.codigo,160)}" width="160" height="160" style="border-radius:var(--r-md)">`;
+    abrirModal('modalQRGen');
+    showToast('Pase generado: '+res.codigo,'success');
+    cargarMisVisitantes();
+  } catch(err) { showToast('Error: '+err.message,'error'); }
+}
+
+/* ── Incidencias ── */
+async function cargarMisIncidencias() {
+  try {
+    const res  = await apiPost('LEER_INCIDENCIAS', { comunidadId });
+    const rows = Array.isArray(res) ? res.slice(1) : [];
+    document.getElementById('gridInc').innerHTML = rows.length
+      ? rows.map(r=>`<div class="card" style="padding:1.25rem">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span class="mono" style="font-size:.68rem;color:var(--copper-light)">${esc(r[0])}</span>
+            <span class="badge badge-${r[7]==='Abierto'?'moroso':r[7]==='Resuelto'||r[7]==='Cerrado'?'active':'pending'}">${esc(r[7])}</span>
+          </div>
+          <div style="font-weight:700;margin-bottom:6px">${esc(r[4])}</div>
+          <p style="font-size:.77rem;color:var(--slate);line-height:1.5;margin-bottom:10px">${esc(r[5])}</p>
+          ${r[8]?`<div style="background:var(--ink-soft);border-left:3px solid var(--copper);padding:10px;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:.75rem;color:var(--white)"><div style="font-size:.62rem;color:var(--copper-light);margin-bottom:4px">RESPUESTA ADMIN</div>${esc(r[8])}</div>`
+              :'<div style="font-size:.72rem;color:var(--slate-light);font-style:italic">Esperando respuesta.</div>'}
+        </div>`).join('')
+      : '<p style="color:var(--slate);grid-column:1/-1;padding:24px">Sin incidencias reportadas.</p>';
+  } catch {}
+}
+
+async function crearIncidencia() {
+  const t=document.getElementById('incTit').value.trim(), d=document.getElementById('incDesc').value.trim();
+  if(!t||!d) { showToast('Completa todos los campos','warning'); return; }
+  try {
+    await apiPost('CREAR_INCIDENCIA', { comunidadId, categoria:document.getElementById('incCat').value, titulo:t, descripcion:d });
+    cerrarModal('modalInc'); showToast('Incidencia enviada','success'); cargarMisIncidencias();
+  } catch(err) { showToast('Error: '+err.message,'error'); }
+}
+
+/* ── Rental media ── */
+async function cargarMedia() {
+  try {
+    const res  = await apiPost('LEER_MEDIA_PROPIEDAD', { comunidadId, unidad:miUnidad });
+    const rows = Array.isArray(res) ? res : [];
+    const icons = { imagen:'fa-image', video:'fa-video', documento:'fa-file-pdf' };
+    document.getElementById('gridMedia').innerHTML = rows.length
+      ? rows.map(r=>`<div class="media-card"><div style="aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;background:var(--ink-border);font-size:2.5rem;color:var(--slate-light)"><i class="fas ${icons[r[1]]||'fa-file'}"></i></div><div style="padding:12px"><div style="font-weight:700;font-size:.85rem;margin-bottom:4px">${esc(r[2]||'Sin título')}</div><div style="font-size:.7rem;color:var(--slate)">${esc(r[1])} · ${fmtDate(r[4])}</div><a href="${esc(r[3])}" target="_blank" class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%;text-decoration:none"><i class="fas fa-external-link-alt"></i> Abrir</a></div></div>`).join('')
+      : '<p style="color:var(--slate);grid-column:1/-1;padding:24px">Sin contenido subido aún.</p>';
+  } catch {}
+}
+
+function medFileSelected(input) {
+  mediaFile=input.files[0];
+  const el=document.getElementById('medFileName');
+  if(mediaFile) { el.textContent=mediaFile.name; el.style.display='block'; }
+}
+
+async function subirMedia() {
+  if(!mediaFile) { showToast('Selecciona un archivo','warning'); return; }
+  try {
+    const b64=await fileToBase64(mediaFile);
+    await apiPost('SUBIR_MEDIA_PROPIEDAD', {
+      comunidadId, unidad:miUnidad, archivoBase64:b64, archivoNombre:mediaFile.name,
+      tipo:document.getElementById('medTipo').value, titulo:document.getElementById('medTit').value.trim()
+    });
+    cerrarModal('modalMedia'); showToast('Archivo subido','success'); mediaFile=null; cargarMedia();
+  } catch(err) { showToast('Error: '+err.message,'error'); }
+}
+</script>
+</body>
+</html>

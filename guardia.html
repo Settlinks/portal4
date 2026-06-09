@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal 4 — Control de Acceso</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="./assets/css/styles.css">
+  <style>
+    .guard-hero { background:linear-gradient(135deg,var(--ink-card) 0%,rgba(201,120,58,.08) 100%); border:1px solid var(--ink-border); border-radius:var(--r-2xl); padding:2rem; text-align:center; margin-bottom:24px; }
+    .scan-box   { width:100%; max-width:420px; margin:0 auto 24px; background:var(--ink-soft); border:2px solid var(--ink-border); border-radius:var(--r-xl); padding:2rem; }
+    .scan-input { font-family:'DM Mono',monospace!important; font-size:1.6rem; font-weight:700; letter-spacing:.25em; text-align:center; text-transform:uppercase; }
+    .result-ok  { background:rgba(63,185,80,.08);  border:2px solid rgba(63,185,80,.4);  border-radius:var(--r-xl); padding:1.5rem; margin-bottom:24px; }
+    .result-fail{ background:rgba(248,81,73,.08);  border:2px solid rgba(248,81,73,.4);  border-radius:var(--r-xl); padding:1.5rem; margin-bottom:24px; }
+    .log-row    { padding:12px; background:var(--ink-soft); border-radius:var(--r-md); border:1px solid var(--ink-border); margin-bottom:8px; display:flex; align-items:center; gap:12px; }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-mark" style="background:linear-gradient(135deg,var(--slate),var(--info))">
+        <i class="fas fa-shield-halved" style="font-size:1.5rem"></i>
+      </div>
+      <h2>Control de Acceso</h2>
+      <p>Portal de Guardia · Portal 4</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="field-label">ID de Comunidad</label><input type="text" id="gCom" class="input-field" placeholder="COM-1001" autocomplete="off" onkeydown="if(event.key==='Enter')loginGuard()"></div>
+      <div><label class="field-label">Correo</label><input type="email" id="gUsr" class="input-field" placeholder="guardia@comunidad.mx" autocomplete="username" onkeydown="if(event.key==='Enter')loginGuard()"></div>
+      <div><label class="field-label">PIN</label><input type="password" id="gPin" class="input-field" placeholder="••••••" maxlength="6" autocomplete="current-password" onkeydown="if(event.key==='Enter')loginGuard()"></div>
+      <div id="gErr" style="display:none;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:var(--r-md);padding:10px 14px;font-size:.8rem;color:var(--danger)"></div>
+      <button id="gBtn" onclick="loginGuard()" class="btn btn-primary btn-lg" style="width:100%"><i class="fas fa-shield-check"></i> Ingresar</button>
+    </div>
+    <div class="login-divider" style="margin-top:1.25rem">Otros accesos</div>
+    <div style="display:flex;gap:8px">
+      <a href="./index.html"      class="btn btn-outline btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-lock"></i> Admin</a>
+      <a href="./residentes.html" class="btn btn-outline btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-user"></i> Residente</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP SHELL ══ -->
+<div id="appShell" style="display:none">
+  <nav class="navbar">
+    <a href="#" class="navbar-brand" onclick="return false">
+      <div class="navbar-logo" style="background:linear-gradient(135deg,var(--slate),var(--info))">
+        <i class="fas fa-shield-halved" style="font-size:.9rem"></i>
+      </div>
+      <div><div class="navbar-brand-name">Portal 4 · Guardia</div><div class="navbar-brand-sub" id="gNavCom">—</div></div>
+    </a>
+    <div class="nav-user">
+      <div class="nav-avatar" style="background:linear-gradient(135deg,var(--slate),var(--info))" id="gNavAv">G</div>
+      <div><div class="nav-user-name" id="gNavNom">—</div><div class="nav-user-role">GUARDIA</div></div>
+    </div>
+    <button class="btn-logout" onclick="logout()"><i class="fas fa-arrow-right-from-bracket"></i></button>
+  </nav>
+
+  <main style="padding:20px 24px;position:relative;z-index:1;max-width:700px;margin:0 auto">
+
+    <div class="guard-hero">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--info);margin-bottom:6px">Bienvenido al turno</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:6px" id="guardName">Guardia</h1>
+      <p style="font-size:.82rem;color:var(--slate)" id="guardTime"></p>
+    </div>
+
+    <!-- Scanner -->
+    <div class="scan-box">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--info);text-align:center;margin-bottom:16px">
+        <i class="fas fa-qrcode"></i>&nbsp; Validar Pase de Visitante
+      </div>
+      <input class="input-field scan-input" id="scanInput" placeholder="XXXXXXXX"
+             maxlength="8" autofocus oninput="this.value=this.value.toUpperCase()"
+             onkeydown="if(event.key==='Enter')validar()" style="margin-bottom:14px">
+      <button class="btn btn-primary" style="width:100%" onclick="validar()">
+        <i class="fas fa-shield-check"></i>&nbsp; Validar acceso
+      </button>
+    </div>
+
+    <!-- Result -->
+    <div id="resultBox" style="display:none"></div>
+
+    <!-- Log del turno -->
+    <div class="card" style="padding:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div><div class="section-eyebrow">Turno actual</div><h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--white)">Registro de Accesos</h3></div>
+        <span class="badge badge-tenant" id="countBadge">0 validaciones</span>
+      </div>
+      <div id="checkLog">
+        <p style="color:var(--slate);font-size:.82rem;font-style:italic">Sin accesos validados en este turno.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="./assets/js/api.js"></script>
+<script>
+let comunidadId = '';
+let checkInLog  = [];
+
+window.addEventListener('DOMContentLoaded', () => {
+  const s = Session.get();
+  if (s && ['guardia','admin','superadmin'].includes(s.role)) {
+    comunidadId = s.comunidadId || '';
+    mostrarApp(s);
+  }
+  setInterval(updateTime, 1000);
+  updateTime();
+});
+
+function updateTime() {
+  const el = document.getElementById('guardTime');
+  if (el) el.textContent = new Date().toLocaleString('es-MX', { weekday:'long', day:'2-digit', month:'long', hour:'2-digit', minute:'2-digit' });
+}
+
+async function loginGuard() {
+  const btn   = document.getElementById('gBtn');
+  const errEl = document.getElementById('gErr');
+  const comId = document.getElementById('gCom').value.trim();
+  const usr   = document.getElementById('gUsr').value.trim();
+  const pin   = document.getElementById('gPin').value.trim();
+  errEl.style.display='none';
+  if (!comId||!usr||!pin) { errEl.textContent='Completa todos los campos.'; errEl.style.display='block'; return; }
+  btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verificando…';
+  try {
+    const res = await apiPost('LOGIN', { comunidadId:comId }, { usuario:usr, pin, otpCode:'', comunidadId:comId });
+    if (!['guardia','admin','superadmin'].includes(res.role)) {
+      errEl.textContent='Acceso denegado: se requiere rol de guardia o admin.';
+      errEl.style.display='block'; return;
+    }
+    Session.set({ usuario:usr, token:res.token, role:res.role, nombre:res.nombre, comunidadId:comId });
+    comunidadId=comId;
+    mostrarApp(res);
+  } catch(err) { errEl.textContent=err.message; errEl.style.display='block'; }
+  finally { btn.disabled=false; btn.innerHTML='<i class="fas fa-shield-check"></i> Ingresar'; }
+}
+
+function mostrarApp(s) {
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appShell').style.display='block';
+  const n=s.nombre||'Guardia';
+  document.getElementById('guardName').textContent=n;
+  document.getElementById('gNavNom').textContent=n;
+  document.getElementById('gNavAv').textContent=n.charAt(0).toUpperCase();
+  document.getElementById('gNavCom').textContent=comunidadId;
+  setTimeout(() => document.getElementById('scanInput')?.focus(), 200);
+}
+
+function logout() { Session.clear(); location.reload(); }
+
+async function validar() {
+  const codigo = document.getElementById('scanInput').value.trim().toUpperCase();
+  if (codigo.length < 4) { showToast('Ingresa el código del pase','warning'); return; }
+  const box = document.getElementById('resultBox');
+  box.style.display='block'; box.className=''; box.innerHTML='';
+
+  try {
+    const res = await apiPost('VALIDAR_PASE', { comunidadId, codigo });
+    const v   = res.visita || [];
+    box.className='result-ok';
+    box.innerHTML=`
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div style="width:52px;height:52px;background:rgba(63,185,80,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--success);flex-shrink:0"><i class="fas fa-check-circle"></i></div>
+        <div><div style="color:var(--success);font-weight:700;font-size:1.15rem">ACCESO AUTORIZADO</div><div style="font-size:.75rem;color:var(--slate)">${new Date().toLocaleTimeString('es-MX')}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.82rem">
+        <div><span style="color:var(--slate-light);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em">Visitante</span><br><strong>${esc(v[4]||'—')}</strong></div>
+        <div><span style="color:var(--slate-light);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em">Unidad anfitrión</span><br><strong>${esc(v[2]||'—')}</strong></div>
+        <div><span style="color:var(--slate-light);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em">Residente</span><br><strong>${esc(v[3]||'—')}</strong></div>
+        <div><span style="color:var(--slate-light);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em">Placa</span><br><strong>${esc(v[7]||'N/A')}</strong></div>
+      </div>`;
+    showToast('Acceso autorizado: '+(v[4]||'visitante'),'success');
+    checkInLog.unshift({ codigo, visitante:v[4]||'—', unidad:v[2]||'—', hora:new Date().toLocaleTimeString('es-MX'), ok:true });
+  } catch(err) {
+    box.className='result-fail';
+    box.innerHTML=`
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:52px;height:52px;background:rgba(248,81,73,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--danger);flex-shrink:0"><i class="fas fa-times-circle"></i></div>
+        <div><div style="color:var(--danger);font-weight:700;font-size:1.15rem">ACCESO DENEGADO</div><div style="font-size:.78rem;color:var(--slate);margin-top:2px">${esc(err.message)}</div></div>
+      </div>`;
+    showToast('Pase inválido o ya utilizado','error');
+    checkInLog.unshift({ codigo, visitante:'—', unidad:'—', hora:new Date().toLocaleTimeString('es-MX'), ok:false });
+  } finally {
+    document.getElementById('scanInput').value='';
+    document.getElementById('scanInput').focus();
+    renderLog();
+  }
+}
+
+function renderLog() {
+  const badge = document.getElementById('countBadge');
+  badge.textContent = checkInLog.length + ' validación' + (checkInLog.length!==1?'es':'');
+  document.getElementById('checkLog').innerHTML = checkInLog.length
+    ? checkInLog.map(e=>`<div class="log-row">
+        <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:${e.ok?'rgba(63,185,80,.12)':'rgba(248,81,73,.12)'};color:${e.ok?'var(--success)':'var(--danger)'}">
+          <i class="fas ${e.ok?'fa-check':'fa-times'}" style="font-size:.75rem"></i>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.82rem;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            ${esc(e.visitante)} <span style="color:var(--slate);font-weight:400">· Unidad ${esc(e.unidad)}</span>
+          </div>
+          <div style="font-size:.7rem;color:var(--slate);margin-top:1px">${esc(e.codigo)} · ${e.hora}</div>
+        </div>
+        <span class="badge ${e.ok?'badge-active':'badge-moroso'}" style="flex-shrink:0;font-size:.6rem">${e.ok?'OK':'FAIL'}</span>
+      </div>`).join('')
+    : '<p style="color:var(--slate);font-size:.82rem;font-style:italic">Sin accesos validados en este turno.</p>';
+}
+
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+const TICONS={success:'fa-check-circle',error:'fa-times-circle',info:'fa-info-circle',warning:'fa-exclamation-triangle'};
+function showToast(msg,type='info',dur=4000){let c=document.getElementById('toast-container');if(!c){c=document.createElement('div');c.id='toast-container';document.body.appendChild(c);}const t=document.createElement('div');t.className=`toast ${type}`;t.innerHTML=`<i class="toast-icon fas ${TICONS[type]}"></i><span>${msg}</span>`;c.appendChild(t);setTimeout(()=>{t.classList.add('hide');setTimeout(()=>t.remove(),350);},dur);}
+</script>
+</body>
+</html>
