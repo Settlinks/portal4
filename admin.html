@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal 4 — Panel Administrativo</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="./assets/css/styles.css">
-  <style>
-    .stats-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
-    @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
-    @media(max-width:700px) {.stats-grid{grid-template-columns:repeat(2,1fr);}}
-    .main-grid  { display:grid; grid-template-columns:1fr 360px; gap:20px; align-items:start; }
-    @media(max-width:1100px){.main-grid{grid-template-columns:1fr;}}
-    .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
-    .bar-row    { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-    .bar-track  { flex:1; background:var(--ink-border); border-radius:99px; height:8px; overflow:hidden; }
-    .bar-fill   { height:100%; border-radius:99px; transition:width .5s ease; }
-    .bar-fill.income  { background:linear-gradient(90deg,var(--copper),var(--gold)); }
-    .bar-fill.expense { background:linear-gradient(90deg,var(--danger),#ff8a80); }
-    .bar-val    { font-size:.7rem; font-weight:700; color:var(--white); width:90px; flex-shrink:0; }
-    .unit-grid  { display:grid; grid-template-columns:repeat(auto-fill,minmax(60px,1fr)); gap:6px; }
-    .unit-cell  { aspect-ratio:1; border-radius:var(--r-sm); display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:.65rem; font-weight:700; cursor:pointer; transition:var(--transition); border:1px solid var(--ink-border); gap:2px; }
-    .unit-cell.ok     { background:rgba(63,185,80,.1);  color:var(--success); border-color:rgba(63,185,80,.3); }
-    .unit-cell.moroso { background:rgba(248,81,73,.1);  color:var(--danger);  border-color:rgba(248,81,73,.3); }
-    .unit-cell.pend   { background:rgba(210,153,34,.08);color:var(--warning); border-color:rgba(210,153,34,.25); }
-    .unit-cell:hover  { transform:scale(1.08); box-shadow:var(--shadow-sm); }
-    .activity-item { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--ink-border-soft); }
-    .activity-item:last-child { border-bottom:none; }
-    .activity-icon { width:34px; height:34px; border-radius:var(--r-sm); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.8rem; }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Portal4 — Panel Administrativo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="./assets/css/styles.css">
+<style>
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+@media(max-width:1200px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+.main-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+@media(max-width:1100px){.main-grid{grid-template-columns:1fr}}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-track{flex:1;background:var(--g700);border-radius:99px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .5s ease}
+.bar-fill.income{background:var(--success)}.bar-fill.expense{background:var(--danger)}
+.bar-val{font-size:.7rem;font-weight:700;color:var(--white);width:90px;flex-shrink:0}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:6px}
+.unit-cell{aspect-ratio:1;border-radius:var(--r-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;cursor:pointer;transition:var(--transition);border:1px solid var(--g700);gap:2px}
+.unit-cell.ok{background:rgba(63,185,80,.1);color:var(--success);border-color:rgba(63,185,80,.3)}
+.unit-cell.moroso{background:rgba(248,81,73,.1);color:var(--danger);border-color:rgba(248,81,73,.3)}
+.unit-cell.pend{background:rgba(210,153,34,.08);color:var(--warning);border-color:rgba(210,153,34,.25)}
+.unit-cell:hover{transform:scale(1.07);box-shadow:var(--shadow-sm)}
+.activity-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--g700)}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:34px;height:34px;border-radius:var(--r-sm);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+/* row actions spacing in tables */
+.p4-table td .action-group{justify-content:flex-end}
+</style>
 </head>
 <body>
 
@@ -36,61 +36,41 @@
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <div class="login-mark">4</div>
-      <h2>Portal 4</h2>
-      <p>Gestión de condominios · Acceso seguro</p>
+      <div class="login-mark">
+        <svg width="32" height="32" viewBox="0 0 210 210" fill="none"><g transform="matrix(1.0548463,0,0,1.0548463,-1.8946013,-10.673863)"><path d="M76.084295,57.884862 37.206138,86.010677 H179.75259" stroke="#000" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M165.00665,35.552725 V174.12824" stroke="#000" stroke-width="11" stroke-linecap="round" fill="none"/><path d="m83.342184,107.44075c-7.568518,0-13.490671,2.801-17.766413,8.40367-4.324865,5.55353-6.487177,13.0485-6.487177,22.48455 0,3.73513 0.07354,8.28115 0.221383,13.6381l2.150408,12.91861c13.466079-.73718 38.046375-.99259 54.952745-.99259 19.65846,0 36.46653.3685 50.42409,1.1057v-14.15399c-15.18623.7863-28.13651,1.17923-38.85035,1.17923 0.0982-1.32698 0.14746-2.89931 0.14746-4.71772 0-14.35071-2.77667-25.77738-8.33015-34.27967-5.55352-8.50234-13.933401-12.75338-25.138725-12.75338z" fill="#000" stroke="none"/></g></svg>
+      </div>
+      <h2>Portal4</h2>
+      <p>Panel Administrativo · Acceso seguro</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px">
-      <div>
-        <label class="field-label">ID de Comunidad</label>
-        <input type="text" id="loginCom" class="input-field" placeholder="COM-1001"
-               autocomplete="off" onkeydown="if(event.key==='Enter')login()">
-      </div>
-      <div>
-        <label class="field-label">Correo electrónico</label>
-        <input type="email" id="loginUsr" class="input-field" placeholder="admin@comunidad.mx"
-               autocomplete="username" onkeydown="if(event.key==='Enter')login()">
-      </div>
-      <div>
-        <label class="field-label">PIN de acceso</label>
-        <input type="password" id="loginPin" class="input-field" placeholder="••••••"
-               maxlength="6" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
-      </div>
-      <div>
-        <label class="field-label">Código 2FA
-          <span style="font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px;font-size:.65rem;opacity:.6">(solo Admin / Presidente)</span>
-        </label>
-        <input type="text" id="loginOtp" class="input-field" placeholder="000000"
-               style="font-family:'DM Mono',monospace;letter-spacing:.25em;font-size:1.1rem;text-align:center"
-               maxlength="6" inputmode="numeric" onkeydown="if(event.key==='Enter')login()">
-      </div>
-      <!-- Error display — inline, no page reload -->
+      <div><label class="field-label">ID de Comunidad</label><input type="text" id="loginCom" class="input-field" placeholder="COM-1001" autocomplete="off" onkeydown="if(event.key==='Enter')login()"></div>
+      <div><label class="field-label">Correo electrónico</label><input type="email" id="loginUsr" class="input-field" placeholder="admin@comunidad.mx" autocomplete="username" onkeydown="if(event.key==='Enter')login()"></div>
+      <div><label class="field-label">PIN de acceso</label><input type="password" id="loginPin" class="input-field" placeholder="••••••" maxlength="6" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"></div>
+      <div><label class="field-label">Código 2FA <span style="font-weight:300;text-transform:none;letter-spacing:0;margin-left:4px;font-size:.62rem;opacity:.6">(Admin / Presidente)</span></label>
+        <input type="text" id="loginOtp" class="input-field" placeholder="000000" style="font-family:'DM Mono',monospace;letter-spacing:.25em;font-size:1.1rem;text-align:center" maxlength="6" inputmode="numeric" onkeydown="if(event.key==='Enter')login()"></div>
       <div id="loginError" style="display:none;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:var(--r-md);padding:10px 14px;font-size:.8rem;color:var(--danger);line-height:1.5"></div>
-      <button id="loginBtn" onclick="login()" class="btn btn-primary btn-lg" style="width:100%;margin-top:4px">
-        <i class="fas fa-right-to-bracket"></i> Ingresar al sistema
-      </button>
+      <button id="loginBtn" onclick="login()" class="btn btn-primary btn-lg" style="width:100%;margin-top:4px"><i class="fas fa-right-to-bracket"></i> Ingresar al sistema</button>
     </div>
     <div class="login-divider" style="margin-top:1.5rem">Otros accesos</div>
     <div style="display:flex;gap:8px">
-      <a href="./residentes.html" class="btn btn-outline btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-building-user"></i> Residente</a>
-      <a href="./guardia.html"    class="btn btn-outline btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-shield-halved"></i> Guardia</a>
+      <a href="./index.html" class="btn btn-ghost btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-home"></i> Inicio</a>
+      <a href="./residentes.html" class="btn btn-ghost btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-building-user"></i> Residente</a>
+      <a href="./guardia.html" class="btn btn-ghost btn-sm" style="flex:1;text-decoration:none"><i class="fas fa-shield-halved"></i> Guardia</a>
     </div>
   </div>
 </div>
 
-<!-- ══ APP SHELL ══ -->
+<!-- ══ APP ══ -->
 <div id="appShell" style="display:none">
-
   <nav class="navbar">
     <div style="display:flex;align-items:center;gap:16px">
-      <a href="#" class="navbar-brand" onclick="return false">
-        <div class="navbar-logo">4</div>
-        <div>
-          <div class="navbar-brand-name">Portal 4</div>
-          <div class="navbar-brand-sub" id="navComId">—</div>
+      <a href="./index.html" class="navbar-brand" title="Ir al inicio">
+        <div class="navbar-logo">
+          <svg width="20" height="20" viewBox="0 0 210 210" fill="none"><g transform="matrix(1.0548463,0,0,1.0548463,-1.8946013,-10.673863)"><path d="M76.084295,57.884862 37.206138,86.010677 H179.75259" stroke="#000" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M165.00665,35.552725 V174.12824" stroke="#000" stroke-width="11" stroke-linecap="round" fill="none"/><path d="m83.342184,107.44075c-7.568518,0-13.490671,2.801-17.766413,8.40367-4.324865,5.55353-6.487177,13.0485-6.487177,22.48455 0,3.73513 0.07354,8.28115 0.221383,13.6381l2.150408,12.91861c13.466079-.73718 38.046375-.99259 54.952745-.99259 19.65846,0 36.46653.3685 50.42409,1.1057v-14.15399c-15.18623.7863-28.13651,1.17923-38.85035,1.17923 0.0982-1.32698 0.14746-2.89931 0.14746-4.71772 0-14.35071-2.77667-25.77738-8.33015-34.27967-5.55352-8.50234-13.933401-12.75338-25.138725-12.75338z" fill="#000" stroke="none"/></g></svg>
         </div>
+        <div><div class="navbar-brand-name">Portal4</div><div class="navbar-brand-sub" id="navComId">—</div></div>
       </a>
-      <span class="navbar-tagline" id="navTagline">Panel de administración</span>
+      <span class="navbar-tagline" id="navTagline">Panel administrativo</span>
     </div>
     <div class="navbar-nav" id="mainNav">
       <a href="#" class="nav-link active" onclick="ir('dashboard',this)"><i class="fas fa-gauge-high"></i> <span>Dashboard</span></a>
@@ -101,16 +81,15 @@
       <a href="#" class="nav-link" onclick="ir('incidencias',this)"><i class="fas fa-triangle-exclamation"></i> <span>Incidencias</span></a>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
-      <div class="nav-user">
-        <div class="nav-avatar" id="navAvatar">?</div>
-        <div><div class="nav-user-name" id="navNombre">—</div><div class="nav-user-role" id="navRole">—</div></div>
-      </div>
+      <button class="share-btn" onclick="shareSnapshot('dashboard',document.getElementById('appShell'))"><i class="fas fa-share-nodes"></i> Compartir</button>
+      <div class="nav-user"><div class="nav-avatar" id="navAvatar">?</div><div><div class="nav-user-name" id="navNombre">—</div><div class="nav-user-role" id="navRole">—</div></div></div>
       <button class="btn-logout" title="Cerrar sesión" onclick="logout()"><i class="fas fa-arrow-right-from-bracket"></i></button>
       <button class="hamburger" id="hbBtn" onclick="toggleMobNav()"><span></span><span></span><span></span></button>
     </div>
   </nav>
 
   <div class="mobile-nav" id="mobNav">
+    <a href="./index.html" class="nav-link"><i class="fas fa-home"></i> Inicio (landing)</a>
     <a href="#" class="nav-link" onclick="ir('dashboard',this);closeMobNav()"><i class="fas fa-gauge-high"></i> Dashboard</a>
     <a href="#" class="nav-link" onclick="ir('residentes',this);closeMobNav()"><i class="fas fa-users"></i> Residentes</a>
     <a href="#" class="nav-link" onclick="ir('finanzas',this);closeMobNav()"><i class="fas fa-coins"></i> Finanzas</a>
@@ -123,67 +102,75 @@
 
   <main style="padding:20px 24px;position:relative;z-index:1">
 
-    <!-- ═══ DASHBOARD ═══ -->
+    <!-- DASHBOARD -->
     <section id="sec-dashboard" class="page-enter">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap">
         <div><div class="section-eyebrow">Bienvenido</div><h1 class="section-title" id="dashTitle">Panel Principal</h1></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="share-btn" onclick="shareSnapshot('overview',document.getElementById('sec-dashboard'))"><i class="fas fa-share-nodes"></i> Compartir vista</button>
           <button class="btn btn-outline btn-sm" onclick="cargarDashboard()"><i class="fas fa-rotate-right"></i> Actualizar</button>
           <button class="btn btn-primary btn-sm" onclick="abrirModal('modalPago')"><i class="fas fa-plus"></i> Registrar pago</button>
         </div>
       </div>
       <div class="stats-grid" style="margin-bottom:20px">
-        <div class="stat-card s-gold"><div class="stat-icon" style="background:rgba(212,175,55,.12);color:var(--gold)"><i class="fas fa-building"></i></div><div><div class="stat-value" id="stTotal">—</div><div class="stat-label">Total unidades</div></div></div>
+        <div class="stat-card s-gold"><div class="stat-icon" style="background:rgba(255,255,255,.06);color:var(--g300)"><i class="fas fa-building"></i></div><div><div class="stat-value" id="stTotal">—</div><div class="stat-label">Total unidades</div></div></div>
         <div class="stat-card s-green"><div class="stat-icon" style="background:rgba(63,185,80,.1);color:var(--success)"><i class="fas fa-check-circle"></i></div><div><div class="stat-value" id="stAlDia">—</div><div class="stat-label">Al corriente</div></div></div>
         <div class="stat-card s-red"><div class="stat-icon" style="background:rgba(248,81,73,.08);color:var(--danger)"><i class="fas fa-exclamation-circle"></i></div><div><div class="stat-value" id="stMorosos">—</div><div class="stat-label">Morosos</div></div></div>
-        <div class="stat-card s-copper"><div class="stat-icon" style="background:var(--copper-mist);color:var(--copper-light)"><i class="fas fa-coins"></i></div><div><div class="stat-value" id="stIngresos">—</div><div class="stat-label">Ingresos mes</div></div></div>
+        <div class="stat-card s-copper"><div class="stat-icon" style="background:rgba(255,255,255,.06);color:var(--g300)"><i class="fas fa-coins"></i></div><div><div class="stat-value" id="stIngresos">—</div><div class="stat-label">Ingresos mes</div></div></div>
         <div class="stat-card s-blue"><div class="stat-icon" style="background:rgba(88,166,255,.08);color:var(--info)"><i class="fas fa-ticket"></i></div><div><div class="stat-value" id="stInc">—</div><div class="stat-label">Incidencias abiertas</div></div></div>
       </div>
       <div class="main-grid">
         <div style="display:flex;flex-direction:column;gap:20px">
           <div class="card" style="padding:1.5rem">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-              <div><div class="section-eyebrow">Vista rápida</div><h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--white)">Mapa de Unidades</h3></div>
-              <div style="display:flex;gap:12px;font-size:.68rem">
-                <span style="color:var(--success)">● Al corriente</span>
-                <span style="color:var(--danger)">● Moroso</span>
-                <span style="color:var(--warning)">● Pendiente</span>
+              <div><div class="section-eyebrow">Vista rápida</div><h3 class="section-title" style="font-size:1.05rem">Mapa de Unidades</h3></div>
+              <div style="display:flex;gap:12px;font-size:.66rem;align-items:center">
+                <span style="color:var(--success)">● Al corriente</span><span style="color:var(--danger)">● Moroso</span><span style="color:var(--warning)">● Pendiente</span>
               </div>
             </div>
-            <div class="unit-grid" id="unitGrid"><div class="skeleton" style="height:60px"></div><div class="skeleton" style="height:60px"></div><div class="skeleton" style="height:60px"></div></div>
+            <div class="unit-grid" id="unitGrid"></div>
           </div>
           <div class="card" style="padding:1.5rem">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-              <div><div class="section-eyebrow">Cobranza</div><h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--white)">Unidades Morosas</h3></div>
-              <button class="btn btn-danger-ghost btn-sm" onclick="enviarAvisosMasivos()"><i class="fas fa-envelope"></i> Avisos masivos</button>
+              <div><div class="section-eyebrow">Cobranza</div><h3 class="section-title" style="font-size:1.05rem">Unidades Morosas</h3></div>
+              <div style="display:flex;gap:8px">
+                <button class="share-btn" onclick="shareSnapshot('morosos',document.getElementById('morososBody'))"><i class="fas fa-share-nodes"></i></button>
+                <button class="btn btn-danger-ghost btn-sm" onclick="enviarAvisosMasivos()"><i class="fas fa-envelope"></i> Avisos masivos</button>
+              </div>
             </div>
-            <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>Unidad</th><th>Propietario</th><th>Acciones</th></tr></thead><tbody id="morososBody"><tr><td colspan="3" style="text-align:center;padding:20px;color:var(--slate)">Cargando…</td></tr></tbody></table></div>
+            <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>Unidad</th><th>Propietario</th><th>Acciones</th></tr></thead><tbody id="morososBody"></tbody></table></div>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:20px">
           <div class="chart-wrap">
             <div class="section-eyebrow" style="margin-bottom:4px">Resumen financiero</div>
-            <h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--white);margin-bottom:20px">Ingresos vs Egresos</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h3 class="section-title" style="font-size:1rem;margin-bottom:16px">Ingresos vs Egresos</h3>
+              <button class="share-btn" onclick="shareSnapshot('finanzas',document.querySelector('.chart-wrap'))"><i class="fas fa-share-nodes"></i></button>
+            </div>
             <div id="finChart"><div class="skeleton" style="height:130px"></div></div>
-            <div style="display:flex;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--ink-border)">
-              <div><div style="font-size:.65rem;color:var(--slate);text-transform:uppercase;letter-spacing:.08em">Balance neto</div><div style="font-family:'DM Mono',monospace;font-size:1rem;font-weight:700;margin-top:2px" id="balVal">—</div></div>
+            <div style="display:flex;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--g700)">
+              <div><div style="font-size:.62rem;color:var(--g500);text-transform:uppercase;letter-spacing:.08em">Balance neto</div><div style="font-family:'DM Mono',monospace;font-size:1rem;font-weight:700;margin-top:2px" id="balVal">—</div></div>
               <button class="btn btn-ghost btn-sm" onclick="ir('finanzas')">Ver detalles <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
           <div class="card" style="padding:1.5rem">
-            <div class="section-eyebrow" style="margin-bottom:4px">Sistema</div>
-            <h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--white);margin-bottom:16px">Actividad Reciente</h3>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <div><div class="section-eyebrow">Sistema</div><h3 class="section-title" style="font-size:1rem">Actividad Reciente</h3></div>
+              <button class="share-btn" onclick="shareSnapshot('actividad',document.getElementById('actFeed'))"><i class="fas fa-share-nodes"></i></button>
+            </div>
             <div id="actFeed"><div class="skeleton" style="height:50px;margin-bottom:8px"></div><div class="skeleton" style="height:50px;margin-bottom:8px"></div><div class="skeleton" style="height:50px"></div></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ═══ RESIDENTES ═══ -->
+    <!-- RESIDENTES -->
     <section id="sec-residentes" style="display:none">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap">
         <div><div class="section-eyebrow">Administración</div><h1 class="section-title">Residentes y Propiedades</h1></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="share-btn" onclick="shareSnapshot('residentes',document.getElementById('sec-residentes'))"><i class="fas fa-share-nodes"></i> Compartir</button>
           <button class="btn btn-primary btn-sm" onclick="abrirModal('modalUsuario')"><i class="fas fa-user-plus"></i> Nuevo residente</button>
           <button class="btn btn-outline btn-sm" onclick="abrirModal('modalPropiedad')"><i class="fas fa-building-plus"></i> Nueva unidad</button>
         </div>
@@ -193,22 +180,20 @@
         <button class="tab-btn" onclick="swTab('propiedades',this)"><i class="fas fa-building"></i> Propiedades <span class="tab-badge" id="badgeP">0</span></button>
       </div>
       <div id="tabUsuarios">
-        <div class="search-bar" style="max-width:360px;margin-bottom:16px">
-          <i class="fas fa-search search-icon"></i>
-          <input class="input-field" id="buscarU" placeholder="Buscar por nombre, email o unidad…" style="padding-left:44px" oninput="filtrarU(this.value)">
-        </div>
-        <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Unidad</th><th>Estatus</th><th>Acciones</th></tr></thead><tbody id="tbUsuarios"><tr><td colspan="7" style="text-align:center;padding:24px;color:var(--slate)">Cargando…</td></tr></tbody></table></div>
+        <div class="search-bar" style="max-width:360px;margin-bottom:16px"><i class="fas fa-search search-icon"></i><input class="input-field" id="buscarU" placeholder="Nombre, email o unidad…" style="padding-left:44px" oninput="filtrarU(this.value)"></div>
+        <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Unidad</th><th>Estatus</th><th>Acciones</th></tr></thead><tbody id="tbUsuarios"></tbody></table></div>
       </div>
       <div id="tabPropiedades" style="display:none">
-        <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Torre</th><th>Unidad</th><th>Propietario</th><th>M²</th><th>Estado cuenta</th><th>Acciones</th></tr></thead><tbody id="tbPropiedades"><tr><td colspan="7" style="text-align:center;padding:24px;color:var(--slate)">Cargando…</td></tr></tbody></table></div>
+        <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Torre</th><th>Unidad</th><th>Propietario</th><th>M²</th><th>Estado cuenta</th><th>Acciones</th></tr></thead><tbody id="tbPropiedades"></tbody></table></div>
       </div>
     </section>
 
-    <!-- ═══ FINANZAS ═══ -->
+    <!-- FINANZAS -->
     <section id="sec-finanzas" style="display:none">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap">
         <div><div class="section-eyebrow">Motor financiero</div><h1 class="section-title">Finanzas del Condominio</h1></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="share-btn" onclick="shareSnapshot('finanzas',document.getElementById('sec-finanzas'))"><i class="fas fa-share-nodes"></i> Compartir</button>
           <button class="btn btn-primary btn-sm" onclick="abrirModal('modalPago')"><i class="fas fa-plus"></i> Ingreso</button>
           <button class="btn btn-outline btn-sm" onclick="abrirModal('modalEgreso')"><i class="fas fa-minus"></i> Egreso</button>
         </div>
@@ -216,45 +201,52 @@
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px">
         <div class="stat-card s-green"><div class="stat-icon" style="background:rgba(63,185,80,.1);color:var(--success)"><i class="fas fa-arrow-trend-up"></i></div><div><div class="stat-value" id="finTotIng">$0</div><div class="stat-label">Ingresos totales</div></div></div>
         <div class="stat-card s-red"><div class="stat-icon" style="background:rgba(248,81,73,.08);color:var(--danger)"><i class="fas fa-arrow-trend-down"></i></div><div><div class="stat-value" id="finTotEgr">$0</div><div class="stat-label">Egresos totales</div></div></div>
-        <div class="stat-card s-copper"><div class="stat-icon" style="background:var(--copper-mist);color:var(--copper-light)"><i class="fas fa-scale-balanced"></i></div><div><div class="stat-value" id="finBal">$0</div><div class="stat-label">Balance neto</div></div></div>
+        <div class="stat-card s-copper"><div class="stat-icon" style="background:rgba(255,255,255,.06);color:var(--g300)"><i class="fas fa-scale-balanced"></i></div><div><div class="stat-value" id="finBal">$0</div><div class="stat-label">Balance neto</div></div></div>
       </div>
       <div class="tab-bar">
         <button class="tab-btn active" onclick="swFinTab('ing',this)"><i class="fas fa-arrow-down" style="color:var(--success)"></i> Ingresos</button>
         <button class="tab-btn" onclick="swFinTab('egr',this)"><i class="fas fa-arrow-up" style="color:var(--danger)"></i> Egresos</button>
       </div>
-      <div id="tabIng"><div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Unidad</th><th>Propietario</th><th>Concepto</th><th>Monto</th><th>Método</th><th>Período</th><th>Fecha</th><th>Estado</th></tr></thead><tbody id="tbIng"><tr><td colspan="9" style="text-align:center;padding:24px;color:var(--slate)">Cargando…</td></tr></tbody></table></div></div>
-      <div id="tabEgr" style="display:none"><div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Concepto</th><th>Proveedor</th><th>Monto</th><th>Categoría</th><th>Fecha</th></tr></thead><tbody id="tbEgr"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--slate)">Cargando…</td></tr></tbody></table></div></div>
+      <div id="tabIng"><div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Unidad</th><th>Propietario</th><th>Concepto</th><th>Monto</th><th>Método</th><th>Período</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbIng"></tbody></table></div></div>
+      <div id="tabEgr" style="display:none"><div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Concepto</th><th>Proveedor</th><th>Monto</th><th>Categoría</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="tbEgr"></tbody></table></div></div>
     </section>
 
-    <!-- ═══ AMENIDADES ═══ -->
+    <!-- AMENIDADES -->
     <section id="sec-amenidades" style="display:none">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap">
         <div><div class="section-eyebrow">Reservaciones</div><h1 class="section-title">Amenidades</h1></div>
-        <button class="btn btn-ghost btn-sm" onclick="cargarAmenidades()"><i class="fas fa-rotate-right"></i> Actualizar</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="share-btn" onclick="shareSnapshot('amenidades',document.getElementById('sec-amenidades'))"><i class="fas fa-share-nodes"></i></button>
+          <button class="btn btn-primary btn-sm" onclick="abrirModal('modalNuevaAmen')"><i class="fas fa-plus"></i> Nueva amenidad</button>
+          <button class="btn btn-ghost btn-sm" onclick="cargarAmenidades()"><i class="fas fa-rotate-right"></i> Actualizar</button>
+        </div>
       </div>
-      <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Unidad</th><th>Amenidad</th><th>Fecha</th><th>Hora</th><th>Duración</th><th>Residente</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="tbAmen"><tr><td colspan="9" style="text-align:center;padding:24px;color:var(--slate)">Cargando…</td></tr></tbody></table></div>
+      <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Unidad</th><th>Amenidad</th><th>Fecha</th><th>Hora</th><th>Duración</th><th>Residente</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbAmen"></tbody></table></div>
     </section>
 
-    <!-- ═══ VISITANTES ═══ -->
+    <!-- VISITANTES -->
     <section id="sec-visitantes" style="display:none">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap">
         <div><div class="section-eyebrow">Control de acceso</div><h1 class="section-title">Registro de Visitantes</h1></div>
-        <button class="btn btn-outline btn-sm" onclick="abrirModal('modalQRVal')"><i class="fas fa-qrcode"></i> Validar QR</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="share-btn" onclick="shareSnapshot('visitantes',document.getElementById('sec-visitantes'))"><i class="fas fa-share-nodes"></i></button>
+          <button class="btn btn-primary btn-sm" onclick="abrirModal('modalNuevoVis')"><i class="fas fa-plus"></i> Nuevo pase</button>
+          <button class="btn btn-outline btn-sm" onclick="abrirModal('modalQRVal')"><i class="fas fa-qrcode"></i> Validar QR</button>
+        </div>
       </div>
-      <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Código</th><th>Unidad</th><th>Residente</th><th>Visitante</th><th>Fecha visita</th><th>Placa</th><th>Estado</th></tr></thead><tbody id="tbVis"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--slate)">Cargando…</td></tr></tbody></table></div>
+      <div class="p4-table-wrap"><table class="p4-table"><thead><tr><th>ID</th><th>Código</th><th>Unidad</th><th>Residente</th><th>Visitante</th><th>Fecha visita</th><th>Placa</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tbVis"></tbody></table></div>
     </section>
 
-    <!-- ═══ INCIDENCIAS ═══ -->
+    <!-- INCIDENCIAS -->
     <section id="sec-incidencias" style="display:none">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap">
         <div><div class="section-eyebrow">Soporte</div><h1 class="section-title">Incidencias y Tickets</h1></div>
-        <button class="btn btn-ghost btn-sm" onclick="cargarIncidencias()"><i class="fas fa-rotate-right"></i> Actualizar</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="share-btn" onclick="shareSnapshot('incidencias',document.getElementById('sec-incidencias'))"><i class="fas fa-share-nodes"></i></button>
+          <button class="btn btn-ghost btn-sm" onclick="cargarIncidencias()"><i class="fas fa-rotate-right"></i> Actualizar</button>
+        </div>
       </div>
-      <div class="cards-grid" id="gridInc">
-        <div class="skeleton" style="height:180px;border-radius:var(--r-xl)"></div>
-        <div class="skeleton" style="height:180px;border-radius:var(--r-xl)"></div>
-        <div class="skeleton" style="height:180px;border-radius:var(--r-xl)"></div>
-      </div>
+      <div class="cards-grid" id="gridInc"></div>
     </section>
 
   </main>
@@ -279,10 +271,7 @@
       </div>
       <div><label class="field-label">Referencia (opcional)</label><input class="input-field" id="pagoRef" placeholder="Número de transacción"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline btn-sm" onclick="cerrarModal('modalPago')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarPago()"><i class="fas fa-check"></i> Confirmar pago</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalPago')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarPago()"><i class="fas fa-check"></i> Confirmar pago</button></div>
   </div>
 </div>
 
@@ -293,25 +282,23 @@
       <div><label class="field-label">Concepto</label><input class="input-field" id="egrConcepto" placeholder="Descripción del gasto"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div><label class="field-label">Proveedor</label><input class="input-field" id="egrProveedor" placeholder="Nombre del proveedor"></div>
-        <div><label class="field-label">Categoría</label><select class="input-field" id="egrCategoria"><option>Mantenimiento</option><option>Seguridad</option><option>Limpieza</option><option>Servicios públicos</option><option>Reparaciones</option><option>Administrativo</option><option>Otro</option></select></div>
+        <div><label class="field-label">Categoría</label><select class="input-field" id="egrCategoria"><option>Mantenimiento</option><option>Seguridad</option><option>Limpieza</option><option>Servicios</option><option>Reparaciones</option><option>Administrativo</option><option>Otro</option></select></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div><label class="field-label">Monto (MXN)</label><input class="input-field" id="egrMonto" type="number" min="0" step="0.01" placeholder="0.00"></div>
         <div><label class="field-label">Método</label><select class="input-field" id="egrMetodo"><option>Efectivo</option><option>Transferencia</option><option>Cheque</option><option>Tarjeta</option></select></div>
       </div>
-      <div><label class="field-label">Notas</label><textarea class="input-field" id="egrNotas" rows="2" placeholder="Observaciones u otros detalles…"></textarea></div>
+      <div><label class="field-label">Notas</label><textarea class="input-field" id="egrNotas" rows="2" placeholder="Observaciones…"></textarea></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline btn-sm" onclick="cerrarModal('modalEgreso')">Cancelar</button>
-      <button class="btn btn-danger-ghost btn-sm" onclick="guardarEgreso()"><i class="fas fa-check"></i> Registrar egreso</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalEgreso')">Cancelar</button><button class="btn btn-danger-ghost btn-sm" onclick="guardarEgreso()"><i class="fas fa-check"></i> Registrar egreso</button></div>
   </div>
 </div>
 
 <div id="modalUsuario" class="modal-overlay hidden">
   <div class="modal-box" style="max-width:580px">
-    <div class="modal-header"><h3 class="modal-title">Registrar Residente</h3><button class="btn-logout" onclick="cerrarModal('modalUsuario')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-header"><h3 class="modal-title" id="modalUsuarioTitle">Registrar Residente</h3><button class="btn-logout" onclick="cerrarModal('modalUsuario')"><i class="fas fa-times"></i></button></div>
     <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <input type="hidden" id="uEditId">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div><label class="field-label">Nombre completo</label><input class="input-field" id="uNombre" placeholder="Nombre completo"></div>
         <div><label class="field-label">Correo electrónico</label><input class="input-field" id="uEmail" type="email" placeholder="correo@ejemplo.com"></div>
@@ -323,10 +310,7 @@
       </div>
       <div id="inqOpt" style="display:none"><label class="field-label">Acceso al portal</label><select class="input-field" id="uInqActivo"><option value="Sí">Activo — puede ingresar</option><option value="No">Bloqueado</option></select></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline btn-sm" onclick="cerrarModal('modalUsuario')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarUsuario()"><i class="fas fa-user-plus"></i> Crear residente</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalUsuario')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarUsuario()"><i class="fas fa-user-plus"></i> <span id="btnUsuarioLabel">Crear residente</span></button></div>
   </div>
 </div>
 
@@ -348,10 +332,39 @@
         <div><label class="field-label">Bodega</label><input class="input-field" id="pBod" placeholder="B-12"></div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline btn-sm" onclick="cerrarModal('modalPropiedad')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarPropiedad()"><i class="fas fa-building-plus"></i> Registrar unidad</button>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalPropiedad')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarPropiedad()"><i class="fas fa-building-plus"></i> Registrar unidad</button></div>
+  </div>
+</div>
+
+<div id="modalNuevoVis" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header"><h3 class="modal-title">Generar Pase de Visitante</h3><button class="btn-logout" onclick="cerrarModal('modalNuevoVis')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="field-label">Unidad anfitrión</label><input class="input-field" id="visUnidad" placeholder="A-101"></div>
+      <div><label class="field-label">Nombre del visitante</label><input class="input-field" id="visNombre" placeholder="Nombre completo"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="field-label">Fecha de visita</label><input class="input-field" id="visFecha" type="date"></div>
+        <div><label class="field-label">Hora aproximada</label><input class="input-field" id="visHora" type="time"></div>
+      </div>
+      <div><label class="field-label">Placa (opcional)</label><input class="input-field" id="visPlaca" placeholder="ABC-1234"></div>
     </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalNuevoVis')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarNuevoVis()"><i class="fas fa-qrcode"></i> Generar pase</button></div>
+  </div>
+</div>
+
+<div id="modalNuevaAmen" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header"><h3 class="modal-title">Nueva Reserva de Amenidad</h3><button class="btn-logout" onclick="cerrarModal('modalNuevaAmen')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="field-label">Amenidad</label><select class="input-field" id="amenTipo"><option>Salón de eventos</option><option>Rooftop</option><option>Gimnasio</option><option>Alberca</option><option>BBQ</option><option>Sala de juntas</option></select></div>
+      <div><label class="field-label">Unidad reservante</label><input class="input-field" id="amenUnidad" placeholder="A-101"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="field-label">Fecha</label><input class="input-field" id="amenFecha" type="date"></div>
+        <div><label class="field-label">Hora</label><select class="input-field" id="amenHora"><option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option></select></div>
+      </div>
+      <div><label class="field-label">Duración</label><select class="input-field" id="amenDur"><option value="1hr">1 hora</option><option value="2hr">2 horas</option><option value="3hr">3 horas</option><option value="Todo el día">Todo el día</option></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalNuevaAmen')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="guardarAmenidad()"><i class="fas fa-calendar-check"></i> Confirmar reserva</button></div>
   </div>
 </div>
 
@@ -359,15 +372,12 @@
   <div class="modal-box">
     <div class="modal-header"><h3 class="modal-title">Responder Incidencia</h3><button class="btn-logout" onclick="cerrarModal('modalIncidencia')"><i class="fas fa-times"></i></button></div>
     <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
-      <div id="incDetailView" style="background:var(--ink-soft);border-radius:var(--r-md);padding:12px;font-size:.82rem;color:var(--slate)"></div>
+      <div id="incDetailView" style="background:var(--g700);border-radius:var(--r-md);padding:12px;font-size:.82rem;color:var(--g400)"></div>
       <div><label class="field-label">Tu respuesta</label><textarea class="input-field" id="incRespuesta" rows="4" placeholder="Escribe tu respuesta…"></textarea></div>
       <div><label class="field-label">Cambiar estado</label><select class="input-field" id="incEstado"><option>En revisión</option><option>En proceso</option><option>Resuelto</option><option>Cerrado</option></select></div>
       <input type="hidden" id="incSelectedId">
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline btn-sm" onclick="cerrarModal('modalIncidencia')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="enviarRespuesta()"><i class="fas fa-paper-plane"></i> Enviar respuesta</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalIncidencia')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="enviarRespuesta()"><i class="fas fa-paper-plane"></i> Enviar respuesta</button></div>
   </div>
 </div>
 
@@ -378,549 +388,175 @@
       <div><label class="field-label">Código del pase</label><input class="input-field" id="qrCodigo" placeholder="XXXXXXXX" style="font-family:'DM Mono',monospace;letter-spacing:.1em;text-align:center;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
       <div id="qrResult" style="display:none"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline btn-sm" onclick="cerrarModal('modalQRVal')">Cerrar</button>
-      <button class="btn btn-primary btn-sm" onclick="validarQR()"><i class="fas fa-shield-check"></i> Validar</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalQRVal')">Cerrar</button><button class="btn btn-primary btn-sm" onclick="validarQR()"><i class="fas fa-shield-check"></i> Validar</button></div>
+  </div>
+</div>
+
+<div id="modalEdit" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header"><h3 class="modal-title" id="modalEditTitle">Editar registro</h3><button class="btn-logout" onclick="cerrarModal('modalEdit')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body"><div id="modalEditBody" style="display:flex;flex-direction:column;gap:14px"></div></div>
+    <div class="modal-footer"><button class="btn btn-outline btn-sm" onclick="cerrarModal('modalEdit')">Cancelar</button><button class="btn btn-primary btn-sm" onclick="confirmarEdit()"><i class="fas fa-check"></i> Guardar cambios</button></div>
   </div>
 </div>
 
 <script src="./assets/js/api.js"></script>
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   PORTAL 4 — index.html  v3.0  (Admin panel)
-═══════════════════════════════════════════════════════════════ */
-var comunidadId = '';
-var _allUsuarios = [];
+var comunidadId='';var _allU=[];var _editCtx={};
 
-/* ── Boot ─────────────────────────────────────────────────────── */
-window.addEventListener('DOMContentLoaded', function() {
-  // Close modals on overlay click
-  document.querySelectorAll('.modal-overlay').forEach(function(m) {
-    m.addEventListener('click', function(e) { if (e.target === m) m.classList.add('hidden'); });
-  });
-  // Restore session
-  var s = Session.get();
-  if (s && ['admin','superadmin','presidente'].indexOf(s.role) !== -1) {
-    comunidadId = s.comunidadId || '';
-    mostrarApp(s);
-  }
+window.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.add('hidden');});});
+  var s=Session.get();
+  if(s&&['admin','superadmin','presidente'].indexOf(s.role)!==-1){comunidadId=s.comunidadId||'';mostrarApp(s);}
+  document.getElementById('visFecha').value=new Date().toISOString().slice(0,10);
+  document.getElementById('amenFecha').value=new Date().toISOString().slice(0,10);
 });
 
-/* ── LOGIN ────────────────────────────────────────────────────── */
-function login() {
-  var btn   = document.getElementById('loginBtn');
-  var errEl = document.getElementById('loginError');
-  var comId = document.getElementById('loginCom').value.trim();
-  var usr   = document.getElementById('loginUsr').value.trim();
-  var pin   = document.getElementById('loginPin').value.trim();
-  var otp   = document.getElementById('loginOtp').value.replace(/\s/g,'').trim();
-
-  errEl.style.display = 'none';
-  if (!comId || !usr || !pin) {
-    errEl.textContent = 'Completa el ID de Comunidad, correo y PIN antes de continuar.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  btn.disabled  = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando…';
-
-  // NOTE: comunidadId goes in datos (not auth) so GAS autenticar() can find the community sheet
-  apiPost('LOGIN', { comunidadId: comId }, { usuario: usr, pin: pin, otpCode: otp, comunidadId: comId })
-    .then(function(res) {
-      if (['admin','superadmin','presidente'].indexOf(res.role) === -1) {
-        errEl.textContent = 'Este panel es solo para administradores. Usa el Portal Residente.';
-        errEl.style.display = 'block';
-        return;
-      }
-      Session.set({
-        usuario: usr, token: res.token, role: res.role,
-        nombre: res.nombre, comunidadId: comId, unidad: res.unidad || ''
-      });
-      comunidadId = comId;
-      mostrarApp(res);
+function login(){
+  var btn=document.getElementById('loginBtn');var errEl=document.getElementById('loginError');
+  var comId=document.getElementById('loginCom').value.trim();var usr=document.getElementById('loginUsr').value.trim();
+  var pin=document.getElementById('loginPin').value.trim();var otp=document.getElementById('loginOtp').value.replace(/\s/g,'').trim();
+  errEl.style.display='none';
+  if(!comId||!usr||!pin){errEl.textContent='Completa el ID de Comunidad, correo y PIN.';errEl.style.display='block';return;}
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verificando…';
+  apiPost('LOGIN',{comunidadId:comId},{usuario:usr,pin:pin,otpCode:otp,comunidadId:comId})
+    .then(function(res){
+      if(['admin','superadmin','presidente'].indexOf(res.role)===-1){errEl.textContent='Este panel es solo para administradores.';errEl.style.display='block';return;}
+      Session.set({usuario:usr,token:res.token,role:res.role,nombre:res.nombre,comunidadId:comId,unidad:res.unidad||''});
+      comunidadId=comId;mostrarApp(res);
     })
-    .catch(function(err) {
-      errEl.textContent = err.message;
-      errEl.style.display = 'block';
-    })
-    .finally(function() {
-      btn.disabled  = false;
-      btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> Ingresar al sistema';
-    });
+    .catch(function(err){errEl.textContent=err.message;errEl.style.display='block';})
+    .finally(function(){btn.disabled=false;btn.innerHTML='<i class="fas fa-right-to-bracket"></i> Ingresar al sistema';});
 }
 
-function mostrarApp(s) {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appShell').style.display    = 'block';
-  var nombre = s.nombre || s.usuario || '—';
-  document.getElementById('navNombre').textContent  = nombre;
-  document.getElementById('navRole').textContent    = (s.role || '').toUpperCase();
-  document.getElementById('navAvatar').textContent  = nombre.charAt(0).toUpperCase();
-  document.getElementById('navComId').textContent   = comunidadId;
-  document.getElementById('dashTitle').textContent  = 'Panel — ' + comunidadId;
-  cargarDashboard();
+function mostrarApp(s){
+  document.getElementById('loginScreen').style.display='none';document.getElementById('appShell').style.display='block';
+  var n=s.nombre||s.usuario||'—';
+  document.getElementById('navNombre').textContent=n;document.getElementById('navRole').textContent=(s.role||'').toUpperCase();
+  document.getElementById('navAvatar').textContent=n.charAt(0).toUpperCase();document.getElementById('navComId').textContent=comunidadId;
+  document.getElementById('dashTitle').textContent='Panel — '+comunidadId;cargarDashboard();
 }
+function logout(){Session.clear();location.reload();}
 
-function logout() { Session.clear(); location.reload(); }
-
-/* ── Navigation ──────────────────────────────────────────────── */
-function ir(id, linkEl) {
-  document.querySelectorAll('main > section').forEach(function(s){ s.style.display = 'none'; });
-  var el = document.getElementById('sec-' + id);
-  if (el) { el.style.display = 'block'; el.classList.remove('page-enter'); void el.offsetWidth; el.classList.add('page-enter'); }
-  document.querySelectorAll('.nav-link').forEach(function(l){ l.classList.remove('active'); });
-  if (linkEl) linkEl.classList.add('active');
-  if (id === 'residentes')  cargarResidentes();
-  if (id === 'finanzas')    cargarFinanzas();
-  if (id === 'amenidades')  cargarAmenidades();
-  if (id === 'visitantes')  cargarVisitantes();
-  if (id === 'incidencias') cargarIncidencias();
+function ir(id,el){
+  document.querySelectorAll('main > section').forEach(function(s){s.style.display='none';});
+  var sec=document.getElementById('sec-'+id);if(sec){sec.style.display='block';sec.classList.remove('page-enter');void sec.offsetWidth;sec.classList.add('page-enter');}
+  document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('active');});if(el)el.classList.add('active');
+  if(id==='residentes')cargarResidentes();if(id==='finanzas')cargarFinanzas();if(id==='amenidades')cargarAmenidades();
+  if(id==='visitantes')cargarVisitantes();if(id==='incidencias')cargarIncidencias();
 }
+function toggleMobNav(){document.getElementById('mobNav').classList.toggle('open');document.getElementById('hbBtn').classList.toggle('open');}
+function closeMobNav(){document.getElementById('mobNav').classList.remove('open');document.getElementById('hbBtn').classList.remove('open');}
+function abrirModal(id){document.getElementById(id).classList.remove('hidden');}
+function cerrarModal(id){document.getElementById(id).classList.add('hidden');}
 
-function toggleMobNav() { document.getElementById('mobNav').classList.toggle('open'); document.getElementById('hbBtn').classList.toggle('open'); }
-function closeMobNav()  { document.getElementById('mobNav').classList.remove('open'); document.getElementById('hbBtn').classList.remove('open'); }
-
-/* ── Modals ───────────────────────────────────────────────────── */
-function abrirModal(id)  { document.getElementById(id).classList.remove('hidden'); }
-function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-/* ═══════════════════════════════════════════════════════════════
-   DASHBOARD
-═══════════════════════════════════════════════════════════════ */
-function cargarDashboard() {
-  Promise.allSettled([
-    apiPost('LEER_FINANZAS',    { comunidadId: comunidadId }),
-    apiPost('LEER_INCIDENCIAS', { comunidadId: comunidadId }),
-    apiPost('LEER_PROPIEDADES', { comunidadId: comunidadId }),
-    apiPost('LEER_LOGS',        { comunidadId: comunidadId })
-  ]).then(function(results) {
-    var fRes   = results[0];
-    var incRes = results[1];
-    var pRes   = results[2];
-    var logRes = results[3];
-
-    var props   = (pRes.status   === 'fulfilled' && Array.isArray(pRes.value))   ? pRes.value.slice(1)   : [];
-    var incs    = (incRes.status  === 'fulfilled' && Array.isArray(incRes.value))  ? incRes.value.slice(1)  : [];
-    var logs    = (logRes.status  === 'fulfilled' && Array.isArray(logRes.value))  ? logRes.value.slice(1)  : [];
-
-    var morosos = props.filter(function(r){ return r[8] === 'Moroso'; });
-    var alDia   = props.filter(function(r){ return r[8] === 'Al corriente'; });
-
-    document.getElementById('stTotal').textContent   = props.length;
-    document.getElementById('stAlDia').textContent   = alDia.length;
-    document.getElementById('stMorosos').textContent = morosos.length;
-    document.getElementById('stInc').textContent     = incs.filter(function(r){ return r[7] === 'Abierto'; }).length;
-
-    // Unit grid
-    document.getElementById('unitGrid').innerHTML = props.length
-      ? props.map(function(p){
-          var cls = p[8] === 'Al corriente' ? 'ok' : p[8] === 'Moroso' ? 'moroso' : 'pend';
-          return '<div class="unit-cell ' + cls + '" title="' + esc(p[4]) + ' · ' + esc(p[8]) + '" '
-            + 'onclick="showToast(\'' + esc(p[2]) + ': ' + esc(p[8]) + '\',\'info\')">'
-            + '<span>' + (cls==='ok'?'✓':cls==='moroso'?'!':'~') + '</span>'
-            + '<span>' + esc(p[2]) + '</span></div>';
-        }).join('')
-      : '<p style="color:var(--slate);font-size:.8rem;padding:8px">Sin propiedades registradas.</p>';
-
-    // Morosos table
-    document.getElementById('morososBody').innerHTML = morosos.length
-      ? morosos.map(function(p){
-          return '<tr>'
-            + '<td><span class="mono" style="color:var(--danger)">' + esc(p[2]) + '</span></td>'
-            + '<td style="font-weight:600">' + esc(p[4]) + '</td>'
-            + '<td><div style="display:flex;gap:6px;flex-wrap:wrap">'
-            + '<button class="btn btn-xs btn-danger-ghost" onclick="showToast(\'Aviso enviado a ' + esc(p[4]) + '\',\'info\')"><i class="fas fa-envelope"></i></button>'
-            + '<button class="btn btn-xs btn-primary" onclick="pagoRapido(\'' + esc(p[2]) + '\',\'' + esc(p[4]) + '\')"><i class="fas fa-coins"></i> Pago</button>'
-            + '</div></td></tr>';
-        }).join('')
-      : '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--success)"><i class="fas fa-check-circle"></i> Sin morosos</td></tr>';
-
-    // Finance
-    if (fRes.status === 'fulfilled') {
-      var ing  = (fRes.value.ingresos || []).slice(1);
-      var egr  = (fRes.value.egresos  || []).slice(1);
-      var sumI = ing.reduce(function(a,r){ return a + (parseFloat(r[4])||0); }, 0);
-      var sumE = egr.reduce(function(a,r){ return a + (parseFloat(r[3])||0); }, 0);
-      document.getElementById('stIngresos').textContent = fmtMXN(sumI);
-      var balEl = document.getElementById('balVal');
-      balEl.textContent = fmtMXN(sumI - sumE);
-      balEl.style.color = sumI >= sumE ? 'var(--success)' : 'var(--danger)';
-      renderFinChart(ing, egr);
-    }
-
-    // Activity log
-    var ACT_ICONS  = { REGISTRAR_PAGO:'fa-coins', CREAR_INCIDENCIA:'fa-triangle-exclamation', VALIDAR_PASE:'fa-shield-check', MARCAR_MOROSO:'fa-circle-exclamation', RESERVAR_AMENIDAD:'fa-calendar-check' };
-    var ACT_COLORS = { REGISTRAR_PAGO:'rgba(63,185,80,.1)', CREAR_INCIDENCIA:'rgba(210,153,34,.1)', VALIDAR_PASE:'rgba(88,166,255,.08)', MARCAR_MOROSO:'rgba(248,81,73,.08)', RESERVAR_AMENIDAD:'rgba(201,120,58,.08)' };
-    document.getElementById('actFeed').innerHTML = logs.length
-      ? logs.slice(-6).reverse().map(function(r){
-          return '<div class="activity-item">'
-            + '<div class="activity-icon" style="background:' + (ACT_COLORS[r[2]]||'rgba(201,120,58,.08)') + ';color:var(--copper-light)">'
-            + '<i class="fas ' + (ACT_ICONS[r[2]]||'fa-circle-dot') + '"></i></div>'
-            + '<div><div style="font-size:.8rem;font-weight:600;color:var(--white)">' + esc(r[2]) + '</div>'
-            + '<div style="font-size:.72rem;color:var(--slate)">' + esc(r[1]) + ' · ' + esc(r[3]) + '</div>'
-            + '<div style="font-size:.64rem;color:var(--slate-light);margin-top:2px">' + fmtDate(r[0]) + '</div>'
-            + '</div></div>';
-        }).join('')
-      : '<p style="color:var(--slate);font-size:.8rem;font-style:italic">Sin actividad reciente.</p>';
+// ── DASHBOARD ──
+function cargarDashboard(){
+  Promise.allSettled([apiPost('LEER_FINANZAS',{comunidadId:comunidadId}),apiPost('LEER_INCIDENCIAS',{comunidadId:comunidadId}),apiPost('LEER_PROPIEDADES',{comunidadId:comunidadId}),apiPost('LEER_LOGS',{comunidadId:comunidadId})])
+  .then(function(R){
+    var props=(R[2].status==='fulfilled'&&Array.isArray(R[2].value))?R[2].value.slice(1):[];
+    var incs=(R[1].status==='fulfilled'&&Array.isArray(R[1].value))?R[1].value.slice(1):[];
+    var logs=(R[3].status==='fulfilled'&&Array.isArray(R[3].value))?R[3].value.slice(1):[];
+    var morosos=props.filter(function(r){return r[8]==='Moroso';});
+    document.getElementById('stTotal').textContent=props.length;
+    document.getElementById('stAlDia').textContent=props.filter(function(r){return r[8]==='Al corriente';}).length;
+    document.getElementById('stMorosos').textContent=morosos.length;
+    document.getElementById('stInc').textContent=incs.filter(function(r){return r[7]==='Abierto';}).length;
+    document.getElementById('unitGrid').innerHTML=props.length?props.map(function(p){
+      var cls=p[8]==='Al corriente'?'ok':p[8]==='Moroso'?'moroso':'pend';
+      return '<div class="unit-cell '+cls+'" title="'+esc(p[2])+': '+esc(p[8])+'" onclick="showToast(\''+esc(p[2])+': '+esc(p[8])+'\',\'info\')"><span>'+(cls==='ok'?'✓':cls==='moroso'?'!':'~')+'</span><span>'+esc(p[2])+'</span></div>';
+    }).join(''):'<p style="color:var(--g500);font-size:.8rem">Sin propiedades.</p>';
+    document.getElementById('morososBody').innerHTML=morosos.length?morosos.map(function(p){return '<tr><td><span class="mono" style="color:var(--danger)">'+esc(p[2])+'</span></td><td style="font-weight:600">'+esc(p[4])+'</td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-xs btn-danger-ghost" onclick="showToast(\'Aviso enviado\',\'info\')"><i class="fas fa-envelope"></i></button><button class="btn btn-xs btn-primary" onclick="pagoRapido(\''+esc(p[2])+'\',\''+esc(p[4])+'\')"><i class="fas fa-coins"></i> Pago</button></div></td></tr>';}).join(''):'<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--success)">✓ Sin morosos</td></tr>';
+    if(R[0].status==='fulfilled'){var ing=(R[0].value.ingresos||[]).slice(1);var egr=(R[0].value.egresos||[]).slice(1);var sI=ing.reduce(function(a,r){return a+(parseFloat(r[4])||0);},0);var sE=egr.reduce(function(a,r){return a+(parseFloat(r[3])||0);},0);document.getElementById('stIngresos').textContent=fmtMXN(sI);var b=document.getElementById('balVal');b.textContent=fmtMXN(sI-sE);b.style.color=sI>=sE?'var(--success)':'var(--danger)';renderFinChart(ing,egr);}
+    var AICO={REGISTRAR_PAGO:'fa-coins',CREAR_INCIDENCIA:'fa-triangle-exclamation',VALIDAR_PASE:'fa-shield-check',MARCAR_MOROSO:'fa-circle-exclamation',RESERVAR_AMENIDAD:'fa-calendar-check'};
+    document.getElementById('actFeed').innerHTML=logs.length?logs.slice(-6).reverse().map(function(r){return '<div class="activity-item"><div class="activity-icon" style="background:rgba(255,255,255,.04);color:var(--g400)"><i class="fas '+(AICO[r[2]]||'fa-circle-dot')+'"></i></div><div><div style="font-size:.8rem;font-weight:600;color:var(--white)">'+esc(r[2])+'</div><div style="font-size:.72rem;color:var(--g500)">'+esc(r[1])+' · '+esc(r[3])+'</div><div style="font-size:.64rem;color:var(--g600);margin-top:2px">'+fmtDate(r[0])+'</div></div></div>';}).join(''):'<p style="color:var(--g500);font-size:.8rem;font-style:italic">Sin actividad reciente.</p>';
   });
 }
 
-function renderFinChart(ing, egr) {
-  // Build period list from last 4 unique periods
-  var periods = [];
-  ing.forEach(function(r){ var p = r[7]||''; if(p && periods.indexOf(p)===-1) periods.push(p); });
-  periods = periods.slice(-4);
-  if (!periods.length) { document.getElementById('finChart').innerHTML = '<p style="color:var(--slate);font-size:.8rem">Sin períodos registrados.</p>'; return; }
-  var maxV = 1;
-  periods.forEach(function(m){
-    var si = ing.filter(function(r){ return (r[7]||'')===m; }).reduce(function(a,r){ return a+(parseFloat(r[4])||0); },0);
-    var se = egr.filter(function(r){ return (r[7]||r[7]||'').slice(0,7)===m.slice(0,7); }).reduce(function(a,r){ return a+(parseFloat(r[3])||0); },0);
-    if (si > maxV) maxV = si;
-    if (se > maxV) maxV = se;
-  });
-  document.getElementById('finChart').innerHTML = periods.map(function(m){
-    var si = ing.filter(function(r){ return (r[7]||'')===m; }).reduce(function(a,r){ return a+(parseFloat(r[4])||0); },0);
-    var se = egr.filter(function(r){ return (r[7]||r[7]||'').slice(0,7)===m.slice(0,7); }).reduce(function(a,r){ return a+(parseFloat(r[3])||0); },0);
-    return '<div style="margin-bottom:12px">'
-      + '<div style="font-size:.65rem;color:var(--slate);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">' + m + '</div>'
-      + '<div class="bar-row"><div class="bar-track"><div class="bar-fill income" style="width:' + Math.round(si/maxV*100) + '%"></div></div><div class="bar-val" style="color:var(--success)">' + fmtMXN(si) + '</div></div>'
-      + '<div class="bar-row"><div class="bar-track"><div class="bar-fill expense" style="width:' + Math.round(se/maxV*100) + '%"></div></div><div class="bar-val" style="color:var(--danger)">' + fmtMXN(se) + '</div></div>'
-      + '</div>';
-  }).join('');
+function renderFinChart(ing,egr){
+  var periods=[];ing.forEach(function(r){var p=r[7]||'';if(p&&periods.indexOf(p)===-1)periods.push(p);});periods=periods.slice(-4);
+  if(!periods.length){document.getElementById('finChart').innerHTML='<p style="color:var(--g500);font-size:.8rem">Sin períodos.</p>';return;}
+  var mx=1;periods.forEach(function(m){var si=ing.filter(function(r){return(r[7]||'')===m;}).reduce(function(a,r){return a+(parseFloat(r[4])||0);},0);var se=egr.filter(function(r){return(r[7]||r[7]||'').slice(0,7)===m.slice(0,7);}).reduce(function(a,r){return a+(parseFloat(r[3])||0);},0);if(si>mx)mx=si;if(se>mx)mx=se;});
+  document.getElementById('finChart').innerHTML=periods.map(function(m){var si=ing.filter(function(r){return(r[7]||'')===m;}).reduce(function(a,r){return a+(parseFloat(r[4])||0);},0);var se=egr.filter(function(r){return(r[7]||'').slice(0,7)===m.slice(0,7);}).reduce(function(a,r){return a+(parseFloat(r[3])||0);},0);return '<div style="margin-bottom:12px"><div style="font-size:.62rem;color:var(--g500);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">'+m+'</div><div class="bar-row"><div class="bar-track"><div class="bar-fill income" style="width:'+Math.round(si/mx*100)+'%"></div></div><div class="bar-val" style="color:var(--success)">'+fmtMXN(si)+'</div></div><div class="bar-row"><div class="bar-track"><div class="bar-fill expense" style="width:'+Math.round(se/mx*100)+'%"></div></div><div class="bar-val" style="color:var(--danger)">'+fmtMXN(se)+'</div></div></div>';}).join('');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RESIDENTES
-═══════════════════════════════════════════════════════════════ */
-function cargarResidentes() {
-  Promise.allSettled([
-    apiPost('LEER_USUARIOS',    { comunidadId: comunidadId }),
-    apiPost('LEER_PROPIEDADES', { comunidadId: comunidadId })
-  ]).then(function(results) {
-    var uRes = results[0], pRes = results[1];
-    if (uRes.status === 'fulfilled' && Array.isArray(uRes.value)) {
-      _allUsuarios = uRes.value.slice(1);
-      document.getElementById('badgeU').textContent = _allUsuarios.length;
-      renderUsuarios(_allUsuarios);
-    } else if (uRes.status === 'rejected') {
-      showToast('Error usuarios: ' + uRes.reason.message, 'error');
-    }
-    if (pRes.status === 'fulfilled' && Array.isArray(pRes.value)) {
-      var props = pRes.value.slice(1);
-      document.getElementById('badgeP').textContent = props.length;
-      renderPropiedades(props);
-    }
+// ── RESIDENTES ──
+var ROL_BADGE={admin:'badge-admin',superadmin:'badge-admin',presidente:'badge-owner',propietario:'badge-owner',inquilino:'badge-tenant',guardia:'badge-guard'};
+function cargarResidentes(){
+  Promise.allSettled([apiPost('LEER_USUARIOS',{comunidadId:comunidadId}),apiPost('LEER_PROPIEDADES',{comunidadId:comunidadId})])
+  .then(function(R){
+    if(R[0].status==='fulfilled'&&Array.isArray(R[0].value)){_allU=R[0].value.slice(1);document.getElementById('badgeU').textContent=_allU.length;renderUsuarios(_allU);}
+    if(R[1].status==='fulfilled'&&Array.isArray(R[1].value)){var props=R[1].value.slice(1);document.getElementById('badgeP').textContent=props.length;renderPropiedades(props);}
   });
 }
+function renderUsuarios(rows){
+  document.getElementById('tbUsuarios').innerHTML=rows.length?rows.map(function(r){return '<tr><td class="mono" style="font-size:.68rem">'+esc(r[0])+'</td><td style="font-weight:600">'+esc(r[1])+'</td><td style="color:var(--g500);font-size:.78rem">'+esc(r[2])+'</td><td><span class="badge '+(ROL_BADGE[r[4]]||'badge-guard')+'">'+esc(r[4])+'</span></td><td><span class="mono">'+esc(r[5]||'—')+'</span></td><td><span class="badge badge-'+(r[9]==='Activo'?'active':'moroso')+'">'+esc(r[9])+'</span></td><td><div class="action-group"><button class="btn-icon-sm edit" title="Editar" onclick="editarUsuario('+JSON.stringify(r)+')"><i class="fas fa-pen"></i></button><button class="btn-icon-sm hide" title="Cambiar estado" onclick="toggleEstatus(\''+esc(r[0])+'\',\''+esc(r[9])+'\')"><i class="fas fa-eye-slash"></i></button><button class="btn-icon-sm" title="Compartir" onclick="copyToClipboard(\''+esc(r[0])+' '+esc(r[2])+'\\nUnidad: '+esc(r[5]||'N/A')+'\',this)"><i class="fas fa-share-nodes"></i></button><button class="btn-icon-sm del" title="Eliminar" onclick="eliminarUsuario(\''+esc(r[0])+'\',\''+esc(r[1])+'\')"><i class="fas fa-trash"></i></button></div></td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--g500)">Sin residentes.</td></tr>';
+}
+function renderPropiedades(rows){
+  document.getElementById('tbPropiedades').innerHTML=rows.length?rows.map(function(r){return '<tr><td class="mono" style="font-size:.68rem">'+esc(r[0])+'</td><td>'+esc(r[1]||'—')+'</td><td style="font-weight:700"><span class="mono">'+esc(r[2])+'</span></td><td>'+esc(r[4])+'</td><td>'+esc(r[5]||'—')+' m²</td><td><span class="badge badge-'+(r[8]==='Moroso'?'moroso':r[8]==='Al corriente'?'active':'pending')+'">'+esc(r[8])+'</span></td><td><div class="action-group"><button class="btn-icon-sm hide" title="Marcar/quitar moroso" onclick="marcarMoroso(\''+esc(r[2])+'\',\''+esc(r[8])+'\')"><i class="fas fa-'+(r[8]==='Moroso'?'circle-check':'circle-exclamation')+'"></i></button><button class="btn-icon-sm" title="Compartir estado" onclick="shareEstado(\''+esc(r[2])+'\',\''+esc(r[4])+'\',\''+esc(r[8])+'\')"><i class="fas fa-share-nodes"></i></button><button class="btn-icon-sm edit" title="Registrar pago" onclick="pagoRapido(\''+esc(r[2])+'\',\''+esc(r[4])+'\')"><i class="fas fa-coins"></i></button></div></td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--g500)">Sin propiedades.</td></tr>';
+}
+function filtrarU(q){var ql=q.toLowerCase();renderUsuarios(_allU.filter(function(r){return(r[1]||'').toLowerCase().indexOf(ql)!==-1||(r[2]||'').toLowerCase().indexOf(ql)!==-1||(r[5]||'').toLowerCase().indexOf(ql)!==-1;}));}
+function swTab(tab,btn){document.getElementById('tabUsuarios').style.display=tab==='usuarios'?'block':'none';document.getElementById('tabPropiedades').style.display=tab==='propiedades'?'block':'none';document.querySelectorAll('#sec-residentes .tab-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
 
-var ROL_BADGE = { admin:'badge-admin', superadmin:'badge-admin', presidente:'badge-owner', propietario:'badge-owner', inquilino:'badge-tenant', guardia:'badge-guard' };
+// ── FINANZAS ──
+function cargarFinanzas(){
+  apiPost('LEER_FINANZAS',{comunidadId:comunidadId}).then(function(res){
+    var ing=(res.ingresos||[]).slice(1);var egr=(res.egresos||[]).slice(1);
+    var sI=ing.reduce(function(a,r){return a+(parseFloat(r[4])||0);},0);var sE=egr.reduce(function(a,r){return a+(parseFloat(r[3])||0);},0);
+    document.getElementById('finTotIng').textContent=fmtMXN(sI);document.getElementById('finTotEgr').textContent=fmtMXN(sE);
+    var b=document.getElementById('finBal');b.textContent=fmtMXN(sI-sE);b.style.color=sI>=sE?'var(--success)':'var(--danger)';
+    document.getElementById('tbIng').innerHTML=ing.length?ing.map(function(r){return '<tr><td class="mono">'+esc(r[0])+'</td><td class="mono">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td style="color:var(--success);font-weight:700">'+fmtMXN(r[4])+'</td><td>'+esc(r[5])+'</td><td style="color:var(--g500)">'+esc(r[7])+'</td><td style="color:var(--g600)">'+fmtDate(r[8])+'</td><td><span class="badge badge-active">'+esc(r[10])+'</span></td><td><div class="action-group"><button class="btn-icon-sm" title="Compartir" onclick="copyToClipboard(\'Pago '+esc(r[0])+': '+fmtMXN(r[4])+' - '+esc(r[2])+'\',this)"><i class="fas fa-share-nodes"></i></button><button class="btn-icon-sm del" title="Eliminar" onclick="showToast(\'Eliminación de pagos requiere contactar al administrador del sistema\',\'warning\',5000)"><i class="fas fa-trash"></i></button></div></td></tr>';}).join(''):'<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--g500)">Sin ingresos.</td></tr>';
+    document.getElementById('tbEgr').innerHTML=egr.length?egr.map(function(r){return '<tr><td class="mono">'+esc(r[0])+'</td><td style="font-weight:600">'+esc(r[1])+'</td><td style="color:var(--g500)">'+esc(r[2])+'</td><td style="color:var(--danger);font-weight:700">'+fmtMXN(r[3])+'</td><td>'+esc(r[4])+'</td><td style="color:var(--g600)">'+fmtDate(r[7])+'</td><td><div class="action-group"><button class="btn-icon-sm" title="Compartir" onclick="copyToClipboard(\'Egreso '+esc(r[0])+': '+fmtMXN(r[3])+' - '+esc(r[1])+'\',this)"><i class="fas fa-share-nodes"></i></button><button class="btn-icon-sm del" title="Nota: los egresos son permanentes" onclick="showToast(\'Los egresos son registros contables permanentes\',\'warning\',4000)"><i class="fas fa-trash"></i></button></div></td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--g500)">Sin egresos.</td></tr>';
+  }).catch(function(err){showToast('Error finanzas: '+err.message,'error');});
+}
+function swFinTab(tab,btn){document.getElementById('tabIng').style.display=tab==='ing'?'block':'none';document.getElementById('tabEgr').style.display=tab==='egr'?'block':'none';document.querySelectorAll('#sec-finanzas .tab-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
 
-function renderUsuarios(rows) {
-  document.getElementById('tbUsuarios').innerHTML = rows.length
-    ? rows.map(function(r){
-        return '<tr>'
-          + '<td class="mono" style="font-size:.72rem">' + esc(r[0]) + '</td>'
-          + '<td style="font-weight:600">' + esc(r[1]) + '</td>'
-          + '<td style="color:var(--slate);font-size:.8rem">' + esc(r[2]) + '</td>'
-          + '<td><span class="badge ' + (ROL_BADGE[r[4]]||'badge-guard') + '">' + esc(r[4]) + '</span></td>'
-          + '<td><span class="mono">' + (esc(r[5])||'—') + '</span></td>'
-          + '<td><span class="badge badge-' + (r[9]==='Activo'?'active':'moroso') + '">' + esc(r[9]) + '</span></td>'
-          + '<td><div style="display:flex;gap:6px">'
-          + '<button class="btn btn-xs btn-danger-ghost" title="Eliminar" onclick="eliminarUsuario(\'' + esc(r[0]) + '\',\'' + esc(r[1]) + '\')"><i class="fas fa-trash"></i></button>'
-          + '</div></td></tr>';
-      }).join('')
-    : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--slate)">Sin residentes registrados.</td></tr>';
+// ── AMENIDADES ──
+function cargarAmenidades(){
+  apiPost('LEER_AMENIDADES',{comunidadId:comunidadId}).then(function(res){
+    var rows=Array.isArray(res)?res.slice(1):[];
+    document.getElementById('tbAmen').innerHTML=rows.length?rows.map(function(r){return '<tr><td class="mono">'+esc(r[0])+'</td><td class="mono">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td>'+esc(r[4])+'</td><td>'+esc(r[5])+'</td><td>'+esc(r[6])+'</td><td><span class="badge badge-'+(r[8]==='Cancelado'?'moroso':'active')+'">'+esc(r[8])+'</span></td><td><div class="action-group"><button class="btn-icon-sm" title="Compartir" onclick="showToast(\'Reserva '+esc(r[0])+': '+esc(r[2])+' - '+esc(r[3])+'  copiada\',\'info\')"><i class="fas fa-share-nodes"></i></button>'+(r[8]!=='Cancelado'?'<button class="btn-icon-sm del" title="Cancelar reserva" onclick="cancelarReserva(\''+esc(r[0])+'\')"><i class="fas fa-ban"></i></button>':'')+'</div></td></tr>';}).join(''):'<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--g500)">Sin reservaciones.</td></tr>';
+  }).catch(function(err){showToast('Error: '+err.message,'error');});
 }
 
-function renderPropiedades(rows) {
-  document.getElementById('tbPropiedades').innerHTML = rows.length
-    ? rows.map(function(r){
-        return '<tr>'
-          + '<td class="mono" style="font-size:.72rem">' + esc(r[0]) + '</td>'
-          + '<td>' + (esc(r[1])||'—') + '</td>'
-          + '<td style="font-weight:700"><span class="mono">' + esc(r[2]) + '</span></td>'
-          + '<td>' + esc(r[4]) + '</td>'
-          + '<td>' + (esc(r[5])||'—') + ' m²</td>'
-          + '<td><span class="badge badge-' + (r[8]==='Moroso'?'moroso':r[8]==='Al corriente'?'active':'pending') + '">' + esc(r[8]) + '</span></td>'
-          + '<td><div style="display:flex;gap:6px">'
-          + '<button class="btn btn-xs btn-danger-ghost" title="Marcar moroso" onclick="marcarMoroso(\'' + esc(r[2]) + '\')"><i class="fas fa-circle-exclamation"></i></button>'
-          + '<button class="btn btn-xs btn-primary" onclick="pagoRapido(\'' + esc(r[2]) + '\',\'' + esc(r[4]) + '\')"><i class="fas fa-coins"></i></button>'
-          + '</div></td></tr>';
-      }).join('')
-    : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--slate)">Sin propiedades registradas.</td></tr>';
+// ── VISITANTES ──
+function cargarVisitantes(){
+  apiPost('LEER_VISITANTES',{comunidadId:comunidadId}).then(function(res){
+    var rows=Array.isArray(res)?res.slice(1):[];
+    document.getElementById('tbVis').innerHTML=rows.length?rows.map(function(r){return '<tr><td class="mono">'+esc(r[0])+'</td><td><code style="font-family:\'DM Mono\',monospace;font-size:.72rem;background:var(--g700);padding:2px 8px;border-radius:4px">'+esc(r[1])+'</code></td><td class="mono">'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td style="font-weight:600">'+esc(r[4])+'</td><td>'+esc(r[5])+'</td><td>'+esc(r[7]||'—')+'</td><td><span class="badge badge-'+(r[9]==='Vigente'?'active':r[9]==='Usado'?'guard':'moroso')+'">'+esc(r[9])+'</span></td><td><div class="action-group"><button class="btn-icon-sm" title="Compartir código" onclick="copyToClipboard(\''+esc(r[1])+'\',this)"><i class="fas fa-share-nodes"></i></button></div></td></tr>';}).join(''):'<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--g500)">Sin visitantes.</td></tr>';
+  }).catch(function(err){showToast('Error: '+err.message,'error');});
 }
 
-function filtrarU(q) {
-  var ql = q.toLowerCase();
-  renderUsuarios(_allUsuarios.filter(function(r){
-    return (r[1]||'').toLowerCase().indexOf(ql)!==-1 ||
-           (r[2]||'').toLowerCase().indexOf(ql)!==-1 ||
-           (r[5]||'').toLowerCase().indexOf(ql)!==-1;
-  }));
+// ── INCIDENCIAS ──
+function cargarIncidencias(){
+  apiPost('LEER_INCIDENCIAS',{comunidadId:comunidadId}).then(function(res){
+    var rows=Array.isArray(res)?res.slice(1):[];
+    var CAT={Seguridad:'fa-shield',Mantenimiento:'fa-wrench',Ruido:'fa-volume-high',Limpieza:'fa-broom',General:'fa-circle-dot'};
+    document.getElementById('gridInc').innerHTML=rows.length?rows.map(function(r){return '<div class="card card-hover" style="padding:1.25rem"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px"><span class="mono" style="color:var(--g500);font-size:.68rem">'+esc(r[0])+'</span><div style="display:flex;align-items:center;gap:6px"><span class="badge badge-'+(r[7]==='Abierto'?'moroso':r[7]==='Resuelto'||r[7]==='Cerrado'?'active':'pending')+'">'+esc(r[7])+'</span><div class="action-group"><button class="btn-icon-sm" title="Compartir" onclick="copyToClipboard(\'INC '+esc(r[0])+': '+esc(r[4])+'\',this)"><i class="fas fa-share-nodes"></i></button><button class="btn-icon-sm hide" title="Cerrar incidencia" onclick="cerrarInc(\''+esc(r[0])+'\')"><i class="fas fa-xmark"></i></button></div></div></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><i class="fas '+(CAT[r[3]]||'fa-tag')+'" style="color:var(--g400);font-size:.85rem"></i><strong style="font-size:.85rem">'+esc(r[4])+'</strong></div><p style="font-size:.75rem;color:var(--g500);line-height:1.55;margin-bottom:10px">'+esc(r[5])+'</p><div style="font-size:.66rem;color:var(--g600);margin-bottom:12px"><i class="fas fa-user"></i> '+esc(r[2])+' · Unidad '+esc(r[1])+' · '+fmtDate(r[6])+'</div>'+(r[8]?'<div style="background:var(--g700);border-left:2px solid var(--g500);padding:10px;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:.73rem;color:var(--white);margin-bottom:10px"><div style="font-size:.6rem;color:var(--g500);margin-bottom:4px">RESPUESTA</div>'+esc(r[8])+'</div>':'')+'<button class="btn btn-ghost btn-sm" style="width:100%" onclick="abrirRespInc(\''+esc(r[0])+'\',\''+esc(r[4])+'\',\''+esc(r[5])+'\')"><i class="fas fa-reply"></i> Responder</button></div>';}).join(''):'<p style="color:var(--g500);grid-column:1/-1;text-align:center;padding:32px">Sin incidencias.</p>';
+  }).catch(function(err){showToast('Error: '+err.message,'error');});
 }
 
-function swTab(tab, btn) {
-  document.getElementById('tabUsuarios').style.display    = tab==='usuarios'    ? 'block' : 'none';
-  document.getElementById('tabPropiedades').style.display = tab==='propiedades' ? 'block' : 'none';
-  document.querySelectorAll('#sec-residentes .tab-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   FINANZAS
-═══════════════════════════════════════════════════════════════ */
-function cargarFinanzas() {
-  apiPost('LEER_FINANZAS', { comunidadId: comunidadId }).then(function(res) {
-    var ing  = (res.ingresos || []).slice(1);
-    var egr  = (res.egresos  || []).slice(1);
-    var sumI = ing.reduce(function(a,r){ return a+(parseFloat(r[4])||0); }, 0);
-    var sumE = egr.reduce(function(a,r){ return a+(parseFloat(r[3])||0); }, 0);
-    document.getElementById('finTotIng').textContent = fmtMXN(sumI);
-    document.getElementById('finTotEgr').textContent = fmtMXN(sumE);
-    var b = document.getElementById('finBal');
-    b.textContent = fmtMXN(sumI-sumE);
-    b.style.color = sumI>=sumE ? 'var(--success)' : 'var(--danger)';
-    document.getElementById('tbIng').innerHTML = ing.length
-      ? ing.map(function(r){ return '<tr>'
-          +'<td class="mono">' +esc(r[0])+'</td><td class="mono">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td>'
-          +'<td>'+esc(r[3])+'</td><td style="color:var(--success);font-weight:700">'+fmtMXN(r[4])+'</td>'
-          +'<td>'+esc(r[5])+'</td><td style="color:var(--slate)">'+esc(r[7])+'</td>'
-          +'<td style="color:var(--slate-light)">'+fmtDate(r[8])+'</td>'
-          +'<td><span class="badge badge-active">'+esc(r[10])+'</span></td></tr>';
-        }).join('')
-      : '<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--slate)">Sin ingresos.</td></tr>';
-    document.getElementById('tbEgr').innerHTML = egr.length
-      ? egr.map(function(r){ return '<tr>'
-          +'<td class="mono">'+esc(r[0])+'</td><td style="font-weight:600">'+esc(r[1])+'</td>'
-          +'<td style="color:var(--slate)">'+esc(r[2])+'</td>'
-          +'<td style="color:var(--danger);font-weight:700">'+fmtMXN(r[3])+'</td>'
-          +'<td>'+esc(r[4])+'</td><td style="color:var(--slate-light)">'+fmtDate(r[7])+'</td></tr>';
-        }).join('')
-      : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--slate)">Sin egresos.</td></tr>';
-  }).catch(function(err){ showToast('Error finanzas: ' + err.message, 'error'); });
-}
-
-function swFinTab(tab, btn) {
-  document.getElementById('tabIng').style.display = tab==='ing' ? 'block' : 'none';
-  document.getElementById('tabEgr').style.display = tab==='egr' ? 'block' : 'none';
-  document.querySelectorAll('#sec-finanzas .tab-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   AMENIDADES / VISITANTES / INCIDENCIAS
-═══════════════════════════════════════════════════════════════ */
-function cargarAmenidades() {
-  apiPost('LEER_AMENIDADES', { comunidadId: comunidadId }).then(function(res) {
-    var rows = Array.isArray(res) ? res.slice(1) : [];
-    document.getElementById('tbAmen').innerHTML = rows.length
-      ? rows.map(function(r){ return '<tr>'
-          +'<td class="mono">'+esc(r[0])+'</td><td class="mono">'+esc(r[1])+'</td>'
-          +'<td>'+esc(r[2])+'</td><td>'+esc(r[3])+'</td><td>'+esc(r[4])+'</td>'
-          +'<td>'+esc(r[5])+'</td><td>'+esc(r[6])+'</td>'
-          +'<td><span class="badge badge-'+(r[8]==='Cancelado'?'moroso':'active')+'">'+esc(r[8])+'</span></td>'
-          +'<td>'+(r[8]!=='Cancelado'?'<button class="btn btn-xs btn-danger-ghost" onclick="cancelarReserva(\''+esc(r[0])+'\')"><i class="fas fa-ban"></i></button>':'—')+'</td>'
-          +'</tr>';
-        }).join('')
-      : '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--slate)">Sin reservaciones.</td></tr>';
-  }).catch(function(err){ showToast('Error amenidades: ' + err.message, 'error'); });
-}
-
-function cargarVisitantes() {
-  apiPost('LEER_VISITANTES', { comunidadId: comunidadId }).then(function(res) {
-    var rows = Array.isArray(res) ? res.slice(1) : [];
-    document.getElementById('tbVis').innerHTML = rows.length
-      ? rows.map(function(r){ return '<tr>'
-          +'<td class="mono">'+esc(r[0])+'</td>'
-          +'<td><code style="font-family:\'DM Mono\',monospace;font-size:.75rem;background:var(--ink-border);padding:2px 8px;border-radius:4px">'+esc(r[1])+'</code></td>'
-          +'<td class="mono">'+esc(r[2])+'</td><td>'+esc(r[3])+'</td>'
-          +'<td style="font-weight:600">'+esc(r[4])+'</td><td>'+esc(r[5])+'</td>'
-          +'<td>'+esc(r[7]||'—')+'</td>'
-          +'<td><span class="badge badge-'+(r[9]==='Vigente'?'active':r[9]==='Usado'?'guard':'moroso')+'">'+esc(r[9])+'</span></td>'
-          +'</tr>';
-        }).join('')
-      : '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--slate)">Sin visitantes.</td></tr>';
-  }).catch(function(err){ showToast('Error visitantes: ' + err.message, 'error'); });
-}
-
-function cargarIncidencias() {
-  apiPost('LEER_INCIDENCIAS', { comunidadId: comunidadId }).then(function(res) {
-    var rows = Array.isArray(res) ? res.slice(1) : [];
-    var CAT_ICON = { Seguridad:'fa-shield', Mantenimiento:'fa-wrench', Ruido:'fa-volume-high', Limpieza:'fa-broom', General:'fa-circle-dot' };
-    document.getElementById('gridInc').innerHTML = rows.length
-      ? rows.map(function(r){ return '<div class="card card-hover" style="padding:1.25rem">'
-          +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px">'
-          +'<span class="mono" style="color:var(--copper-light);font-size:.7rem">'+esc(r[0])+'</span>'
-          +'<span class="badge badge-'+(r[7]==='Abierto'?'moroso':r[7]==='Resuelto'||r[7]==='Cerrado'?'active':'pending')+'">'+esc(r[7])+'</span></div>'
-          +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
-          +'<i class="fas '+(CAT_ICON[r[3]]||'fa-tag')+'" style="color:var(--copper-light);font-size:.85rem"></i>'
-          +'<strong style="font-size:.88rem">'+esc(r[4])+'</strong></div>'
-          +'<p style="font-size:.77rem;color:var(--slate);line-height:1.5;margin-bottom:10px">'+esc(r[5])+'</p>'
-          +'<div style="font-size:.68rem;color:var(--slate-light);margin-bottom:14px">'
-          +'<i class="fas fa-user"></i> '+esc(r[2])+' · Unidad '+esc(r[1])+' · '+fmtDate(r[6])+'</div>'
-          +(r[8]?'<div style="background:var(--ink-soft);border-left:3px solid var(--copper);padding:10px;border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:.75rem;color:var(--white);margin-bottom:10px">'
-          +'<div style="font-size:.62rem;color:var(--copper-light);margin-bottom:4px">RESPUESTA</div>'+esc(r[8])+'</div>':'')
-          +'<button class="btn btn-ghost btn-sm" style="width:100%" onclick="abrirRespInc(\''+esc(r[0])+'\',\''+esc(r[4])+'\',\''+esc(r[5])+'\')">'
-          +'<i class="fas fa-reply"></i> Responder</button></div>';
-        }).join('')
-      : '<p style="color:var(--slate);grid-column:1/-1;text-align:center;padding:32px">Sin incidencias.</p>';
-  }).catch(function(err){ showToast('Error incidencias: ' + err.message, 'error'); });
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   CRUD ACTIONS
-═══════════════════════════════════════════════════════════════ */
-function guardarPago() {
-  var u = document.getElementById('pagoUnidad').value.trim();
-  var m = document.getElementById('pagoMonto').value;
-  if (!u || !m) { showToast('Unidad y monto son obligatorios', 'warning'); return; }
-  apiPost('REGISTRAR_PAGO', {
-    comunidadId:       comunidadId,
-    unidad:            u,
-    propietarioNombre: document.getElementById('pagoNombre').value.trim(),
-    concepto:          document.getElementById('pagoConcepto').value,
-    periodo:           document.getElementById('pagoPeriodo').value.trim(),
-    monto:             m,
-    metodoPago:        document.getElementById('pagoMetodo').value,
-    referencia:        document.getElementById('pagoRef').value.trim()
-  }).then(function(){
-    cerrarModal('modalPago');
-    showToast('Pago registrado correctamente', 'success');
-    cargarDashboard();
-  }).catch(function(err){ showToast('Error: ' + err.message, 'error'); });
-}
-
-function guardarEgreso() {
-  var c = document.getElementById('egrConcepto').value.trim();
-  var m = document.getElementById('egrMonto').value;
-  if (!c || !m) { showToast('Concepto y monto son obligatorios', 'warning'); return; }
-  apiPost('REGISTRAR_EGRESO', {
-    comunidadId: comunidadId,
-    concepto:    c,
-    proveedor:   document.getElementById('egrProveedor').value.trim(),
-    monto:       m,
-    categoria:   document.getElementById('egrCategoria').value,
-    metodoPago:  document.getElementById('egrMetodo').value,
-    notas:       document.getElementById('egrNotas').value.trim()
-  }).then(function(){
-    cerrarModal('modalEgreso');
-    showToast('Egreso registrado', 'warning');
-    cargarFinanzas();
-  }).catch(function(err){ showToast('Error: ' + err.message, 'error'); });
-}
-
-function guardarUsuario() {
-  var n = document.getElementById('uNombre').value.trim();
-  var e = document.getElementById('uEmail').value.trim();
-  if (!n || !e) { showToast('Nombre y email son obligatorios', 'warning'); return; }
-  apiPost('REGISTRAR_USUARIO', {
-    comunidadId:     comunidadId,
-    nombre:          n,
-    email:           e,
-    rol:             document.getElementById('uRol').value,
-    unidad:          document.getElementById('uUnidad').value.trim(),
-    telefono:        document.getElementById('uTelefono').value.trim(),
-    inquilinoActivo: (document.getElementById('uInqActivo') || {value:'No'}).value
-  }).then(function(){
-    cerrarModal('modalUsuario');
-    showToast('Residente creado. Se enviará email con credenciales.', 'success');
-    cargarResidentes();
-  }).catch(function(err){ showToast('Error: ' + err.message, 'error'); });
-}
-
-function guardarPropiedad() {
-  var u = document.getElementById('pUnidad').value.trim();
-  var n = document.getElementById('pNombre').value.trim();
-  if (!u || !n) { showToast('Unidad y propietario son obligatorios', 'warning'); return; }
-  apiPost('REGISTRAR_PROPIEDAD', {
-    comunidadId:       comunidadId,
-    torre:             document.getElementById('pTorre').value.trim(),
-    unidad:            u,
-    propietarioNombre: n,
-    propietarioId:     document.getElementById('pUsrId').value.trim(),
-    metrosCuadrados:   document.getElementById('pM2').value,
-    estacionamiento:   document.getElementById('pEst').value.trim(),
-    bodega:            document.getElementById('pBod').value.trim()
-  }).then(function(){
-    cerrarModal('modalPropiedad');
-    showToast('Unidad registrada correctamente', 'success');
-    cargarResidentes();
-  }).catch(function(err){ showToast('Error: ' + err.message, 'error'); });
-}
-
-function marcarMoroso(unidad) {
-  if (!confirm('¿Marcar la unidad ' + unidad + ' como MOROSA?')) return;
-  apiPost('MARCAR_MOROSO', { comunidadId: comunidadId, unidad: unidad })
-    .then(function(){ showToast('Unidad ' + unidad + ' marcada como morosa', 'warning'); cargarResidentes(); })
-    .catch(function(err){ showToast('Error: ' + err.message, 'error'); });
-}
-
-function cancelarReserva(id) {
-  if (!confirm('¿Cancelar esta reserva?')) return;
-  apiPost('CANCELAR_RESERVA', { comunidadId: comunidadId, id: id })
-    .then(function(){ showToast('Reserva cancelada', 'warning'); cargarAmenidades(); })
-    .catch(function(err){ showToast('Error: ' + err.message, 'error'); });
-}
-
-function eliminarUsuario(id, nombre) {
-  if (!confirm('¿Eliminar a ' + nombre + ' del sistema?')) return;
-  apiPost('ELIMINAR_USUARIO', { comunidadId: comunidadId, id: id })
-    .then(function(){ showToast('Usuario eliminado', 'warning'); cargarResidentes(); })
-    .catch(function(err){ showToast('Error: ' + err.message, 'error'); });
-}
-
-function enviarRespuesta() {
-  var id  = document.getElementById('incSelectedId').value;
-  var res = document.getElementById('incRespuesta').value.trim();
-  if (!res) { showToast('Escribe una respuesta', 'warning'); return; }
-  apiPost('RESPONDER_INCIDENCIA', {
-    comunidadId: comunidadId, id: id,
-    respuesta:   res,
-    nuevoEstado: document.getElementById('incEstado').value
-  }).then(function(){
-    cerrarModal('modalIncidencia');
-    showToast('Respuesta enviada', 'success');
-    cargarIncidencias();
-  }).catch(function(err){ showToast('Error: ' + err.message, 'error'); });
-}
-
-function validarQR() {
-  var codigo = document.getElementById('qrCodigo').value.trim().toUpperCase();
-  if (!codigo) { showToast('Ingresa un código', 'warning'); return; }
-  var res = document.getElementById('qrResult');
-  apiPost('VALIDAR_PASE', { comunidadId: comunidadId, codigo: codigo })
-    .then(function(r) {
-      var v = r.visita || [];
-      res.style.display = 'block';
-      res.innerHTML = '<div style="background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.3);border-radius:var(--r-md);padding:14px">'
-        +'<div style="color:var(--success);font-weight:700;margin-bottom:8px"><i class="fas fa-check-circle"></i> Acceso autorizado</div>'
-        +'<div style="font-size:.8rem"><strong>Visitante:</strong> '+esc(v[4]||'—')+'<br>'
-        +'<strong>Unidad:</strong> '+esc(v[2]||'—')+'<br>'
-        +'<strong>Residente:</strong> '+esc(v[3]||'—')+'</div></div>';
-      showToast('Acceso autorizado', 'success');
-    })
-    .catch(function(err) {
-      res.style.display = 'block';
-      res.innerHTML = '<div style="background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:var(--r-md);padding:14px;color:var(--danger)"><i class="fas fa-times-circle"></i> '+esc(err.message)+'</div>';
-      showToast('Pase inválido o ya utilizado', 'error');
-    });
-}
-
-/* ── Helpers ── */
-function pagoRapido(u, n) {
-  document.getElementById('pagoUnidad').value = u;
-  document.getElementById('pagoNombre').value = n;
-  abrirModal('modalPago');
-}
-function toggleInqOpt(r) { document.getElementById('inqOpt').style.display = r==='inquilino' ? 'block' : 'none'; }
-function enviarAvisosMasivos() { showToast('Enviando avisos…','info'); setTimeout(function(){ showToast('Avisos enviados ✓','success'); }, 1800); }
-function abrirRespInc(id, titulo, desc) {
-  document.getElementById('incSelectedId').value = id;
-  document.getElementById('incDetailView').innerHTML = '<strong>'+titulo+'</strong><br><span style="color:var(--slate)">'+desc+'</span>';
-  abrirModal('modalIncidencia');
-}
+// ── CRUD ──
+function guardarPago(){var u=document.getElementById('pagoUnidad').value.trim(),m=document.getElementById('pagoMonto').value;if(!u||!m){showToast('Unidad y monto obligatorios','warning');return;}apiPost('REGISTRAR_PAGO',{comunidadId:comunidadId,unidad:u,propietarioNombre:document.getElementById('pagoNombre').value.trim(),concepto:document.getElementById('pagoConcepto').value,periodo:document.getElementById('pagoPeriodo').value.trim(),monto:m,metodoPago:document.getElementById('pagoMetodo').value,referencia:document.getElementById('pagoRef').value.trim()}).then(function(){cerrarModal('modalPago');showToast('Pago registrado ✓','success');cargarDashboard();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function guardarEgreso(){var c=document.getElementById('egrConcepto').value.trim(),m=document.getElementById('egrMonto').value;if(!c||!m){showToast('Concepto y monto obligatorios','warning');return;}apiPost('REGISTRAR_EGRESO',{comunidadId:comunidadId,concepto:c,proveedor:document.getElementById('egrProveedor').value.trim(),monto:m,categoria:document.getElementById('egrCategoria').value,metodoPago:document.getElementById('egrMetodo').value,notas:document.getElementById('egrNotas').value.trim()}).then(function(){cerrarModal('modalEgreso');showToast('Egreso registrado','warning');cargarFinanzas();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function guardarUsuario(){var n=document.getElementById('uNombre').value.trim(),e=document.getElementById('uEmail').value.trim();if(!n||!e){showToast('Nombre y email obligatorios','warning');return;}var editId=document.getElementById('uEditId').value;if(editId){apiPost('ACTUALIZAR_USUARIO',{comunidadId:comunidadId,id:editId,campos:{1:n,2:e,5:document.getElementById('uUnidad').value.trim(),10:document.getElementById('uTelefono').value.trim()}}).then(function(){cerrarModal('modalUsuario');showToast('Usuario actualizado ✓','success');cargarResidentes();}).catch(function(e){showToast('Error: '+e.message,'error');});}else{apiPost('REGISTRAR_USUARIO',{comunidadId:comunidadId,nombre:n,email:e,rol:document.getElementById('uRol').value,unidad:document.getElementById('uUnidad').value.trim(),telefono:document.getElementById('uTelefono').value.trim(),inquilinoActivo:(document.getElementById('uInqActivo')||{value:'No'}).value}).then(function(){cerrarModal('modalUsuario');showToast('Residente creado. Email enviado.','success');cargarResidentes();}).catch(function(e){showToast('Error: '+e.message,'error');});}}
+function guardarPropiedad(){var u=document.getElementById('pUnidad').value.trim(),n=document.getElementById('pNombre').value.trim();if(!u||!n){showToast('Unidad y propietario obligatorios','warning');return;}apiPost('REGISTRAR_PROPIEDAD',{comunidadId:comunidadId,torre:document.getElementById('pTorre').value.trim(),unidad:u,propietarioNombre:n,propietarioId:document.getElementById('pUsrId').value.trim(),metrosCuadrados:document.getElementById('pM2').value,estacionamiento:document.getElementById('pEst').value.trim(),bodega:document.getElementById('pBod').value.trim()}).then(function(){cerrarModal('modalPropiedad');showToast('Unidad registrada ✓','success');cargarResidentes();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function guardarAmenidad(){apiPost('RESERVAR_AMENIDAD',{comunidadId:comunidadId,amenidad:document.getElementById('amenTipo').value,fecha:document.getElementById('amenFecha').value,hora:document.getElementById('amenHora').value,duracion:document.getElementById('amenDur').value}).then(function(){cerrarModal('modalNuevaAmen');showToast('Reserva confirmada ✓','success');cargarAmenidades();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function guardarNuevoVis(){var n=document.getElementById('visNombre').value.trim();if(!n){showToast('Nombre del visitante obligatorio','warning');return;}var s=Session.get();if(s){s.unidad=document.getElementById('visUnidad').value.trim()||s.unidad;}apiPost('GENERAR_PASE_VISITANTE',{comunidadId:comunidadId,nombreVisitante:n,fechaVisita:document.getElementById('visFecha').value,horaVisita:document.getElementById('visHora').value,placa:document.getElementById('visPlaca').value.trim()}).then(function(r){cerrarModal('modalNuevoVis');showToast('Pase generado: '+r.codigo,'success');cargarVisitantes();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function marcarMoroso(u,est){if(!confirm((est==='Moroso'?'¿Marcar al corriente':'¿Marcar como morosa')+' la unidad '+u+'?'))return;var n=est==='Moroso'?'Al corriente':'Moroso';apiPost(est==='Moroso'?'REGISTRAR_PAGO':'MARCAR_MOROSO',est==='Moroso'?{comunidadId:comunidadId,unidad:u,monto:0,concepto:'Regularización',propietarioNombre:''}:{comunidadId:comunidadId,unidad:u}).then(function(){showToast('Unidad '+u+' actualizada','success');cargarResidentes();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function cancelarReserva(id){if(!confirm('¿Cancelar esta reserva?'))return;apiPost('CANCELAR_RESERVA',{comunidadId:comunidadId,id:id}).then(function(){showToast('Reserva cancelada','warning');cargarAmenidades();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function eliminarUsuario(id,n){if(!confirm('¿Eliminar a '+n+'?'))return;apiPost('ELIMINAR_USUARIO',{comunidadId:comunidadId,id:id}).then(function(){showToast('Usuario eliminado','warning');cargarResidentes();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function toggleEstatus(id,est){var nEst=est==='Activo'?'Inactivo':'Activo';apiPost('ACTUALIZAR_USUARIO',{comunidadId:comunidadId,id:id,campos:{'9':nEst}}).then(function(){showToast('Estatus actualizado a '+nEst,'success');cargarResidentes();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function cerrarInc(id){apiPost('RESPONDER_INCIDENCIA',{comunidadId:comunidadId,id:id,respuesta:'Cerrada por administración',nuevoEstado:'Cerrado'}).then(function(){showToast('Incidencia cerrada','success');cargarIncidencias();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function enviarRespuesta(){var id=document.getElementById('incSelectedId').value,res=document.getElementById('incRespuesta').value.trim();if(!res){showToast('Escribe una respuesta','warning');return;}apiPost('RESPONDER_INCIDENCIA',{comunidadId:comunidadId,id:id,respuesta:res,nuevoEstado:document.getElementById('incEstado').value}).then(function(){cerrarModal('modalIncidencia');showToast('Respuesta enviada ✓','success');cargarIncidencias();}).catch(function(e){showToast('Error: '+e.message,'error');});}
+function validarQR(){var c=document.getElementById('qrCodigo').value.trim().toUpperCase();if(!c){showToast('Ingresa un código','warning');return;}var res=document.getElementById('qrResult');apiPost('VALIDAR_PASE',{comunidadId:comunidadId,codigo:c}).then(function(r){var v=r.visita||[];res.style.display='block';res.innerHTML='<div style="background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.3);border-radius:var(--r-md);padding:14px"><div style="color:var(--success);font-weight:700;margin-bottom:8px"><i class="fas fa-check-circle"></i> Acceso autorizado</div><div style="font-size:.8rem"><strong>Visitante:</strong> '+esc(v[4]||'—')+'<br><strong>Unidad:</strong> '+esc(v[2]||'—')+'</div></div>';showToast('Acceso autorizado','success');}).catch(function(e){res.style.display='block';res.innerHTML='<div style="background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3);border-radius:var(--r-md);padding:14px;color:var(--danger)"><i class="fas fa-times-circle"></i> '+esc(e.message)+'</div>';showToast('Pase inválido','error');});}
+function editarUsuario(r){document.getElementById('uEditId').value=r[0];document.getElementById('uNombre').value=r[1]||'';document.getElementById('uEmail').value=r[2]||'';document.getElementById('uUnidad').value=r[5]||'';document.getElementById('uTelefono').value=r[10]||'';document.getElementById('modalUsuarioTitle').textContent='Editar Residente';document.getElementById('btnUsuarioLabel').textContent='Guardar cambios';abrirModal('modalUsuario');}
+function confirmarEdit(){}
+function pagoRapido(u,n){document.getElementById('pagoUnidad').value=u;document.getElementById('pagoNombre').value=n;abrirModal('modalPago');}
+function toggleInqOpt(r){document.getElementById('inqOpt').style.display=r==='inquilino'?'block':'none';}
+function enviarAvisosMasivos(){showToast('Enviando avisos…','info');setTimeout(function(){showToast('Avisos enviados ✓','success');},1800);}
+function abrirRespInc(id,t,d){document.getElementById('incSelectedId').value=id;document.getElementById('incDetailView').innerHTML='<strong>'+t+'</strong><br><span style="color:var(--g500)">'+d+'</span>';abrirModal('modalIncidencia');}
+function shareEstado(u,n,e){copyToClipboard('Unidad '+u+' ('+n+'): '+e,'');showToast('Estado copiado al portapapeles','info');}
 </script>
 </body>
 </html>
